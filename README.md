@@ -11,6 +11,9 @@ A forkable template repository with example AutoJudge implementations for buildi
 git clone https://github.com/trec-autojudge/auto-judge-starterkit.git
 cd auto-judge-starterkit
 
+# Install autojudge-base (required dependency)
+pip install git+https://github.com/trec-auto-judge/auto-judge-base.git
+
 # Install in development mode
 pip install -e .
 
