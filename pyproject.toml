@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-judge-starterkit"
+version = "0.1.0"
+description = "Example AutoJudge implementations for building custom judges"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "TREC AutoJudge Team"}
+]
+keywords = ["trec", "autojudge", "rag", "evaluation", "ir"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "autojudge-base>=0.1.0",
+    "tqdm>=4.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+minima-llm = [
+    "minima-llm>=0.1.0",
+]
+pyterrier = [
+    "python-terrier>=0.10",
+    "tira>=0.0.100",
+]
+
+[project.urls]
+Homepage = "https://github.com/trec-autojudge/auto-judge-starterkit"
+Repository = "https://github.com/trec-autojudge/auto-judge-starterkit"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["judges*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

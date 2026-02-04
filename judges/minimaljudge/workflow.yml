@@ -1,0 +1,118 @@
+# MinimalJudge Workflow Configuration
+#
+# This file controls the judge's behavior and parameters.
+# See autojudge-base documentation for full workflow documentation.
+
+# =============================================================================
+# Judge Classes
+# =============================================================================
+# Dotted import paths to protocol implementations.
+# This allows running the judge via: auto-judge run --workflow workflow.yml
+#
+# Three protocols can be specified separately for modular composition:
+#   nugget_class: NuggetCreatorProtocol (creates nuggets)
+#   qrels_class:  QrelsCreatorProtocol (creates relevance judgments)
+#   judge_class:  LeaderboardJudgeProtocol (produces leaderboard)
+#
+# MinimalJudge demonstrates the modular pattern with three separate classes:
+
+nugget_class: "judges.minimaljudge.minimal_judge.MinimalNuggetCreator"
+qrels_class: "judges.minimaljudge.minimal_judge.MinimalQrelsCreator"
+judge_class: "judges.minimaljudge.minimal_judge.MinimalLeaderboardJudge"
+
+# =============================================================================
+# Lifecycle Flags
+# =============================================================================
+# Control which phases of the judge run and how data flows between them.
+
+create_nuggets: true              # Call create_nuggets() to generate nuggets
+create_qrels: true                # Call create_qrels() to generate relevance judgments
+judge: true                       # Call judge() to produce leaderboard
+
+# Data flow control
+nugget_depends_on_responses: true # Pass responses to create_nuggets()
+judge_uses_nuggets: true          # Pass nuggets to judge()
+judge_uses_qrels: true            # Pass qrels to judge()
+qrels_uses_nuggets: true          # Pass nuggets to create_qrels()
+
+# Force regeneration even if files exist
+force_recreate_nuggets: false
+force_recreate_qrels: false
+
+# Save modified Report.evaldata to file
+augment_report: false
+
+
+# =============================================================================
+# Default Settings
+# =============================================================================
+# Shared settings passed to all phases. Use {_name} for variant/sweep name.
+
+settings:
+  filebase: "{_name}"             # Output filename base (expands to variant name)
+
+
+# =============================================================================
+# Phase-Specific Settings
+# =============================================================================
+# Settings for individual phases. These override shared settings.
+
+nugget_settings:
+  questions_per_topic: 3          # Number of questions to generate per topic
+
+qrels_settings:
+  grade_range: [0, 3]             # Min and max relevance grades
+  length_threshold: 100           # Text length threshold for grading
+
+judge_settings:
+  keyword_bonus: 0.2              # Score bonus for keyword matches
+  on_missing_evals: "fix_aggregate"  # How to handle missing evaluations
+
+
+# =============================================================================
+# Variants
+# =============================================================================
+# Named configurations that override default settings.
+# Run with: auto-judge run --workflow workflow.yml --variant <name>
+
+variants:
+  # Stricter grading with more nuggets
+  strict:
+    nugget_settings:
+      questions_per_topic: 5
+    judge_settings:
+      keyword_bonus: 0.1
+
+  # Lenient grading
+  lenient:
+    qrels_settings:
+      length_threshold: 50
+    judge_settings:
+      keyword_bonus: 0.3
+
+  # No nuggets or qrels - judge only
+  judge-only:
+    create_nuggets: false
+    create_qrels: false
+    judge_uses_nuggets: false
+    judge_uses_qrels: false
+
+
+# =============================================================================
+# Parameter Sweeps
+# =============================================================================
+# Grid search over parameter combinations.
+# Run with: auto-judge run --workflow workflow.yml --sweep <name>
+
+sweeps:
+  # Sweep over keyword bonus values
+  keyword-sweep:
+    judge_settings:
+      keyword_bonus: [0.1, 0.2, 0.3, 0.4]
+
+  # Full grid search: questions x bonus
+  grid-search:
+    nugget_settings:
+      questions_per_topic: [2, 3, 5]
+    judge_settings:
+      keyword_bonus: [0.1, 0.2, 0.3]
