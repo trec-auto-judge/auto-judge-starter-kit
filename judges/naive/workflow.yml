@@ -4,3 +4,6 @@ judge_class: "judges.naive.naive_baseline.NaiveJudge"
 create_nuggets: false
 judge: true
 augment_report: false
+
+settings:
+  filebase: "naive"

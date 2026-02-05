@@ -1,0 +1,6 @@
+model_preferences:
+  - "openai/gpt-oss-120b"            # First choice model
+  - "llama-3.3-70b-instruct"         # Second
+  - "llama-3.3-70b-instruct-tp"      # Third
+on_no_match: "use_default"           # if none of our requested models is available
+

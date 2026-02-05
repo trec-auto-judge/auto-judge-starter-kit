@@ -91,7 +91,7 @@ class RetrievalJudge(AutoJudge):
                 ret.add(run_id=system, topic_id=topic, values=system_to_wmodel_to_score[system])
 
         leaderboard = ret.build()
-        LeaderboardVerification(leaderboard).all()
+        LeaderboardVerification(leaderboard, on_missing="fix_aggregate").all()
         return leaderboard
 
 
