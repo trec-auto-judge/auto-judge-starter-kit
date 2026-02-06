@@ -22,7 +22,7 @@ pip install -e .
 **Optional Dependencies**
 
 ```
-pip install -e ".[minima-llm]"      # Simple backend for LLM-based judges
+pip install -e ".[minima-llm]"      # Lightweight batteries-included LLM client (used by TinyJudge)
 pip install -e ".[pyterrier]"       # For PyTerrier retrieval judge
 pip install -e ".[test]"            # For running tests
 ```
@@ -38,7 +38,7 @@ The core pattern:
 ```python
 import asyncio
 from autojudge_base import Leaderboard, LeaderboardBuilder, LeaderboardSpec, MeasureSpec
-from minima_llm import MinimaLlmRequest, MinimaLlmResponse, OpenAIMinimaLlm
+from minima_llm import MinimaLlmConfig, MinimaLlmRequest, MinimaLlmResponse, OpenAIMinimaLlm
 
 TINY_SPEC = LeaderboardSpec(measures=(MeasureSpec("FIRST_SENTENCE_RELEVANT"),))
 
@@ -46,7 +46,10 @@ class TinyJudge:
     """Implements LeaderboardJudgeProtocol - just needs a judge() method."""
 
     def judge(self, rag_responses, rag_topics, llm_config, **kwargs) -> Leaderboard:
-        backend = OpenAIMinimaLlm(llm_config)   # <-- you can use your own backend, but obtain base_url and model from the llm_config object
+        # Convert base config to full MinimaLlmConfig for backend features
+        full_config = MinimaLlmConfig.from_dict(llm_config.raw) if llm_config.raw else MinimaLlmConfig.from_env()
+        backend = OpenAIMinimaLlm(full_config)
+
         topic_titles = {t.request_id: t.title or "" for t in rag_topics}
         builder = LeaderboardBuilder(TINY_SPEC)
 
@@ -101,9 +104,15 @@ For variants, parameter sweeps, and advanced configurations, see the [workflow d
 
 **Important:** Your judge must use the `llm_config` parameter passed to `judge()`. Do not hardcode endpoints or API keys.
 
+The `llm_config` object (`LlmConfigBase`) provides basic fields (`model`, `base_url`, `cache_dir`) and stores the full YAML config in `.raw` to store additional parameters for your LLM backend (e.g. here `MinimaLlmConfig`):
+
 ```python
+from minima_llm import MinimaLlmConfig, OpenAIMinimaLlm
+
 def judge(self, rag_responses, rag_topics, llm_config, **kwargs) -> Leaderboard:
-    backend = OpenAIMinimaLlm(llm_config)  # Always use the provided config
+    # Convert to full config for backend features (batching, retry, etc.)
+    full_config = MinimaLlmConfig.from_dict(llm_config.raw) if llm_config.raw else MinimaLlmConfig.from_env()
+    backend = OpenAIMinimaLlm(full_config)
     # ... your judge logic
 ```
 
@@ -163,6 +172,51 @@ Uses PyTerrier retrieval models to score responses:
 - Ranks responses by retrieval score
 
 Requires the `pyterrier` optional dependency.
+
+## Test Dataset
+
+### kiddie (`data/kiddie/`)
+
+A small **synthetic dataset** for development and testing:
+- 5 topics with simple queries
+- 4 runs of varying quality
+- Useful for validating workflow configurations and quick iteration
+
+```bash
+# Test your judge against kiddie
+auto-judge run \
+    --workflow judges/naive/workflow.yml \
+    --rag-responses data/kiddie/responses/ \
+    --rag-topics data/kiddie/topics.jsonl \
+    --out-dir ./output/
+```
+
+For real evaluation, obtain official TREC datasets separately.
+
+## Running Against Multiple Datasets
+
+Use `run_all_datasets.py` to run a workflow against multiple datasets configured in a YAML file.
+
+```bash
+# Run against all datasets in data/datasets. 
+python run_all_datasets.py --workflow judges/naive/workflow.yml --datasets data/datasets.yml
+```
+
+### Dataset Configuration (`datasets.yml`)
+
+```yaml
+datasets:
+  - name: kiddie
+    responses: data/kiddie/responses/
+    topics: data/kiddie/topics.jsonl
+    prio1_runs:           # Used with --runs prio1
+      - run_good
+      - run_medium
+    assessed_topics:      # Used with --topics assessed
+      - topic-1
+      - topic-2
+```
+
 
 ## Creating A More Elaborate Judge
 

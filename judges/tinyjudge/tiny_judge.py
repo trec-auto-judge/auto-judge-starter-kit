@@ -20,7 +20,7 @@ from autojudge_base import (
     Report,
     Request,
 )
-from minima_llm import MinimaLlmRequest, MinimaLlmResponse, OpenAIMinimaLlm
+from minima_llm import MinimaLlmConfig, MinimaLlmRequest, MinimaLlmResponse, OpenAIMinimaLlm
 
 
 TINY_SPEC = LeaderboardSpec(measures=(
@@ -68,7 +68,9 @@ class TinyJudge:
             ))
 
         # Run all LLM requests in batch
-        backend = OpenAIMinimaLlm(llm_config)
+        # Convert base config to full MinimaLlmConfig for backend features (batching, retry, etc.)
+        full_config = MinimaLlmConfig.from_dict(llm_config.raw) if llm_config.raw else MinimaLlmConfig.from_env()
+        backend = OpenAIMinimaLlm(full_config)
         llm_results = asyncio.run(backend.run_batched([req for _, _, req in requests_info]))
 
         # Build leaderboard from responses
