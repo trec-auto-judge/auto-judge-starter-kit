@@ -1,6 +1,6 @@
 # Auto-Judge Starterkit
 
-A forkable template repository with example AutoJudge implementations for building custom judges.
+A forkable template repository with example Auto-Judge implementations for building custom judges.
 
 
 
@@ -8,8 +8,8 @@ A forkable template repository with example AutoJudge implementations for buildi
    <img width=120px src="https://trec-auto-judge.cs.unh.edu/media/trec-auto-judge-logo-small.png">
    <br/>
    <br/>
-   <a href="https://github.com/trec-auto-judge/auto-judge-code/actions/workflows/tests.yml">
-   <img alt="Tests" src="https://github.com/trec-auto-judge/auto-judge-code/actions/workflows/tests.yml/badge.svg"/>
+   <a href="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml">
+   <img alt="Tests" src="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml/badge.svg"/>
    </a>
    <a href="tests">
    <img alt="Coverage" src="tests/coverage.svg"/>
@@ -19,12 +19,12 @@ A forkable template repository with example AutoJudge implementations for buildi
    <a href="https://trec-auto-judge.cs.unh.edu/TREC_Auto_Judge.pdf">Proposal</a>
 </p>
 
-This repository contains the code used for evaluation and approaches for the TREC AutoJudge shared tasks.
+This repository contains the code used for evaluation and approaches for the TREC Auto-Judge shared tasks.
 
-- [trec25](trec25) the AutoJudge Pilot at TREC 2025 (**attention: this is work in progress**)
-- [trec26](trec26) the upcoming iteration at TREC 2026 (**attention: this is work in progress**)
+- [judges](judges/) the Auto-Judge implementations
 
-We currently develop (**attention: this is work in progress**) a step-by-step guide on how to submit at [documentation/README.md](documentation/README.md).
+
+We are developing a step-by-step guide on how to submit at [documentation/README.md](documentation/README.md).
 
 ## What is TREC AutoJudge?
 
@@ -32,23 +32,23 @@ We currently develop (**attention: this is work in progress**) a step-by-step gu
 TREC Auto-Judge offers the first rigorous, cross-task benchmark for
 Large-Language-Model judges.
 
-While Large-Language-Model judges have emerged as a pragmatic solution when
+Large-Language-Model judges have emerged as a pragmatic solution when
 manual relevance assessment is costly or infeasible. However, recent
 studies reveal wide variation in accuracy across tasks, prompts, and
-model sizes. 
+model sizes.
 
 Currently, shared task organizers choose an LLM judge per track ad
 hoc, risking inconsistent baselines and hidden biases.
 
 Auto-Judge provides a test bed for comparing different LLM judge ideas 
-across several tasks and correlate results against manually created relevance 
-judgments. AutoJudge proved a testbed to study emerging evaluation approaches, 
-as well as vulnerabilities of LLM judges, and the efficacy of safeguards for 
-those vulnerabilities. 
+across several tasks and correlating results against manually created relevance
+judgments. AutoJudge provides a testbed to study emerging evaluation approaches,
+as well as vulnerabilities of LLM judges, and the efficacy of safeguards for
+those vulnerabilities.
 
-This Auto-Judge evaluation script standardizes data handling and evaluation 
-across multiple shared tasks/TREC tracks that rely on LLM judging and 
-provided a centralized, comparative evaluation of LLM judges under realistic 
+This Auto-Judge evaluation script standardizes data handling and evaluation
+across multiple shared tasks/TREC tracks that rely on LLM judging and
+provides a centralized, comparative evaluation of LLM judges under realistic
 conditions.
 
 
@@ -69,82 +69,88 @@ This code will handle obtaining data sets (akin to `ir_datasets`), input/output 
 
 1. Fork this repository
 2. Clone
-
-```bash
-# Install autojudge-base (required dependency)
-pip install git+https://github.com/trec-auto-judge/auto-judge-base.git
-
-# Install in development mode
-pip install -e .
+3. Create and activate venv
+```
+  uv venv
+  source .venv/bin/activate   # Use this to restart your session
+```
+4. Minimal install via `uv pip`  (`pip` should also work)
+```
+uv pip install -e .
 ```
 
-**Optional Dependencies**
-
+4. Optional: installation with all extra tools (includes `auto-judge-evaluate`  )
 ```
-pip install -e ".[all]"              # Everything below
-pip install -e ".[minima-llm]"      # Lightweight batteries-included LLM client (used by TinyJudge)
-pip install -e ".[pyterrier]"       # For PyTerrier retrieval judge
-pip install -e ".[evaluate]"        # Meta-evaluation tools (leaderboard correlation, qrel agreement)
-pip install -e ".[test]"            # For running tests
+uv pip install -e ".[all]"
 ```
 
-The `evaluate` extra installs [autojudge-evaluate](https://github.com/trec-auto-judge/auto-judge-evaluate), which provides CLI commands for leaderboard correlation (`meta-evaluate`), inter-annotator agreement (`qrel-evaluate`), and format conversion (`eval-result`). See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme) for details.
 
-This provides CLI commands for leaderboard correlation (`meta-evaluate`), inter-annotator agreement (`qrel-evaluate`), and format conversion (`eval-result`). See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme) for usage.
 
-### Implement Your Own Tiny Judge
+#### Selecting Tools and Dependencies
 
-See `judges/tinyjudge/` for a complete working example. For data class documentation (`Report`, `Request`, `Leaderboard`, etc.), see [autojudge-base](https://github.com/trec-auto-judge/auto-judge-base).
+ `uv pip install -e ".[all]"` installs all of the below.
+ 
+If you want to be selective in installing tools
 
-The core pattern:
+* Auto-Judge Meta-Evaluation tools   `uv pip install -e ".[evaluate]"`
+* Lightweight batteries-included LLM client (used by TinyJudge)   `uv pip install -e ".[minima-llm]"`
+* PyTerrier retrieval  (used by PyTerrier retrieval judge) `uv pip install -e ".[pyterrier]"`
+* Pytest unittest infrastructure `uv pip install -e ".[test]"  `
+
+### Add your own Dependencies
+
+Add your own dependencies in `pyproject.toml` under `[project] > dependencies`. 
+
+After modification fetch dependencies, replacing `all` with selected tools and adding  `--refresh` to avoid stale package caches
+
+```
+uv pip install -e ".[all]" --refresh
+```
+
+#### Meta-Evaluation 
+When installed with `[evaluate]`, the Auto-Judge meta-evaluation package provides CLI commands for
+* leaderboard correlation: `auto-judge-evaluate  meta-evaluate --help`  
+* inter-annotator agreement: `auto-judge-evaluate  qrel-evaluate --help`
+* format conversion: `auto-judge-evaluate  eval-result --help`.
+
+See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme)  and built-in `--help`
+
+
+
+### Implement Your Own Judge
+
+ A judge is any class with a `judge()` method:
 
 ```python
-import asyncio
 from autojudge_base import Leaderboard, LeaderboardBuilder, LeaderboardSpec, MeasureSpec
-from minima_llm import MinimaLlmConfig, MinimaLlmRequest, MinimaLlmResponse, OpenAIMinimaLlm
 
-TINY_SPEC = LeaderboardSpec(measures=(MeasureSpec("FIRST_SENTENCE_RELEVANT"),))
+MY_SPEC = LeaderboardSpec(measures=(MeasureSpec("MY_SCORE"),))
 
-class TinyJudge:
-    """Implements LeaderboardJudgeProtocol - just needs a judge() method."""
-
+class MyJudge:
     def judge(self, rag_responses, rag_topics, llm_config, **kwargs) -> Leaderboard:
-        # Convert base config to full MinimaLlmConfig for backend features
-        full_config = MinimaLlmConfig.from_dict(llm_config.raw) if llm_config.raw else MinimaLlmConfig.from_env()
-        backend = OpenAIMinimaLlm(full_config)
+        builder = LeaderboardBuilder(MY_SPEC)
 
-        topic_titles = {t.request_id: t.title or "" for t in rag_topics}
-        builder = LeaderboardBuilder(TINY_SPEC)
-
-        for i, response in enumerate(rag_responses):
-            sentence = response.responses[0].text if response.responses else ""
-            query = topic_titles.get(response.metadata.topic_id, "")
-
-            # generate() is async, so wrap with asyncio.run()
-            resp = asyncio.run(backend.generate(MinimaLlmRequest(
-                request_id=f"q{i}",
-                messages=[
-                    {"role": "system", "content": "You are a relevance evaluator. Respond with only 1 or 0."},
-                    {"role": "user", "content": f"Is this relevant to the query?\n\nQuery: {query}\nSentence: {first_sentence}"},
-                ],
-            )))
-
-            # Parse LLM response (robust to "1", "yes", "relevant", etc.)
-            text = resp.text.strip().lower() if isinstance(resp, MinimaLlmResponse) else ""
-            relevance = 1 if (text.startswith("1") or "relevant" in text) and "not" not in text else 0
+        for response in rag_responses:
+            score = evaluate_response(response)  # your logic here
             builder.add(
                 run_id=response.metadata.run_id,
                 topic_id=response.metadata.topic_id,
-                values={"FIRST_SENTENCE_RELEVANT": relevance},
+                values={"MY_SCORE": score},
             )
 
-        return builder.build(expected_topic_ids=list(topic_titles.keys()), on_missing="fix_aggregate")
+        topic_ids = [t.request_id for t in rag_topics]
+        return builder.build(expected_topic_ids=topic_ids, on_missing="fix_aggregate")
 ```
 
-Configure in `workflow.yml`:
+Register in `workflow.yml`:
 ```yaml
-judge_class: "judges.tinyjudge.tiny_judge.TinyJudge"
+judge_class: "judges.myjudge.my_judge.MyJudge"
 ```
+
+
+For data class documentation (`Report`, `Request`, `Leaderboard`, etc.), see [autojudge-base](https://github.com/trec-auto-judge/auto-judge-base). 
+
+For a full example with LLM calls, see `judges/tinyjudge/`.
 
 
 
@@ -170,16 +176,25 @@ For variants, parameter sweeps, and advanced configurations, see the [workflow d
 The `llm_config` object (`LlmConfigBase`) provides basic fields (`model`, `base_url`, `cache_dir`) and stores the full YAML config in `.raw` to store additional parameters for your LLM backend (e.g. here `MinimaLlmConfig`):
 
 ```python
-from minima_llm import MinimaLlmConfig, OpenAIMinimaLlm
+import asyncio
+from minima_llm import MinimaLlmConfig, MinimaLlmRequest, OpenAIMinimaLlm
 
 def judge(self, rag_responses, rag_topics, llm_config, **kwargs) -> Leaderboard:
     # Convert to full config for backend features (batching, retry, etc.)
-    full_config = MinimaLlmConfig.from_dict(llm_config.raw) if llm_config.raw else MinimaLlmConfig.from_env()
+    full_config = MinimaLlmConfig.from_dict(llm_config.raw)
     backend = OpenAIMinimaLlm(full_config)
     # ... your judge logic
+
+    response = asyncio.run(backend.generate(MinimaLlmRequest(
+        request_id="example",
+        messages=[{"role": "user", "content": "Is this answer relevant? Reply 1 or 0."}],
+    )))
+    score = float(response.text.strip())
 ```
 
 The `llm_config` object is automatically populated from environment variables and optional config files.
+
+This example uses MinimaLlm, but you can use any LLM backend you prefer (including `litellm`).
 
 ### Environment Variables
 
@@ -247,8 +262,8 @@ A small **synthetic dataset** for development and testing:
 # Run your judge against kiddie
 auto-judge run \
     --workflow judges/naive/workflow.yml \
-    --rag-responses data/kiddie/responses/ \
-    --rag-topics data/kiddie/topics.jsonl \
+    --rag-responses data/kiddie/runs/repgen/ \
+    --rag-topics data/kiddie/topics/kiddie-topics.jsonl \
     --out-dir ./output/
 ```
 
@@ -267,14 +282,15 @@ To run on more than just `kiddie`, add entries to `datasets.yml`:
 ```yaml
 datasets:
   - name: kiddie
-    responses: data/kiddie/responses/
-    topics: data/kiddie/topics.jsonl
+    responses: data/kiddie/runs/repgen/
+    topics: data/kiddie/topics/kiddie-topics.jsonl
     prio1_runs:           # Used with --runs prio1
-      - run_good
-      - run_medium
+      - run1
+      - run2
     assessed_topics:      # Used with --topics assessed
-      - topic-1
-      - topic-2
+      - leaf
+      - cloud
+      - bee
 ```
 
 ## Meta-Evaluation
@@ -330,15 +346,13 @@ auto-judge-starterkit/
 ├── pyproject.toml           # Dependencies and package config
 ├── README.md                # This file
 ├── judges/
-│   ├── complete_example/
-│   │   ├── example_judge.py  # Modular judge implementation
-│   │   └── workflow.yml     # Configuration
-│   ├── naive/
-│   │   ├── naive_baseline.py
-│   │   └── workflow.yml
-│   └── pyterrier_retrieval/
-│       ├── retrieval_judge.py
-│       └── workflow.yml
+│   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)
+│   ├── naive/               # Simple baseline judge
+│   ├── tinyjudge/           # Minimal LLM judge example
+│   └── pyterrier_retrieval/ # PyTerrier retrieval judge
+├── data/
+│   └── kiddie/              # Synthetic test dataset
+├── documentation/           # Submission guide
 └── tests/
     └── test_examples.py     # Smoke tests
 ```
