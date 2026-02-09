@@ -43,6 +43,9 @@ pyterrier = [
     "python-terrier>=0.10",
     "tira>=0.0.100",
 ]
+evaluate = [
+    "autojudge-evaluate>=0.1.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/trec-autojudge/auto-judge-starterkit"

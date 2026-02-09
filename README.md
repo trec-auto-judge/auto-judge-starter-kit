@@ -22,16 +22,11 @@ pip install -e .
 ```
 pip install -e ".[minima-llm]"      # Lightweight batteries-included LLM client (used by TinyJudge)
 pip install -e ".[pyterrier]"       # For PyTerrier retrieval judge
+pip install -e ".[evaluate]"        # Meta-evaluation tools (leaderboard correlation, qrel agreement)
 pip install -e ".[test]"            # For running tests
 ```
 
-**Optional: Meta-evaluation Tools**
-
-To evaluate your judge's output against ground-truth leaderboards or qrels, install [autojudge-evaluate](https://github.com/trec-auto-judge/auto-judge-evaluate):
-
-```
-pip install autojudge-evaluate
-```
+The `evaluate` extra installs [autojudge-evaluate](https://github.com/trec-auto-judge/auto-judge-evaluate), which provides CLI commands for leaderboard correlation (`meta-evaluate`), inter-annotator agreement (`qrel-evaluate`), and format conversion (`eval-result`). See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme) for details.
 
 This provides CLI commands for leaderboard correlation (`meta-evaluate`), inter-annotator agreement (`qrel-evaluate`), and format conversion (`eval-result`). See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme) for usage.
 
