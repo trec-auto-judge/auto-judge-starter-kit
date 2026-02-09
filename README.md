@@ -15,8 +15,6 @@ pip install git+https://github.com/trec-auto-judge/auto-judge-base.git
 
 # Install in development mode
 pip install -e .
-
-
 ```
 
 **Optional Dependencies**
@@ -27,7 +25,15 @@ pip install -e ".[pyterrier]"       # For PyTerrier retrieval judge
 pip install -e ".[test]"            # For running tests
 ```
 
+**Optional: Meta-evaluation Tools**
 
+To evaluate your judge's output against ground-truth leaderboards or qrels, install [autojudge-evaluate](https://github.com/trec-auto-judge/auto-judge-evaluate):
+
+```
+pip install autojudge-evaluate
+```
+
+This provides CLI commands for leaderboard correlation (`meta-evaluate`), inter-annotator agreement (`qrel-evaluate`), and format conversion (`eval-result`). See the [autojudge-evaluate README](https://github.com/trec-auto-judge/auto-judge-evaluate#readme) for usage.
 
 ### Implement Your Own Tiny Judge
 
@@ -189,6 +195,16 @@ auto-judge run \
     --rag-responses data/kiddie/responses/ \
     --rag-topics data/kiddie/topics.jsonl \
     --out-dir ./output/
+```
+
+The `data/kiddie/eval/` directory contains a synthetic ground-truth leaderboard for testing meta-evaluation:
+
+```bash
+auto-judge-evaluate meta-evaluate \
+    --truth-leaderboard data/kiddie/eval/kiddie_fake.eval.ir_measures.txt \
+    --truth-format ir_measures \
+    --eval-format tot -i ./output/*eval.txt \
+    --correlation kendall --on-missing default
 ```
 
 For real evaluation, obtain official TREC datasets separately.
