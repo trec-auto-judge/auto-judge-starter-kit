@@ -3,4 +3,6 @@ __pycache__
 test-coverage
 .coverage
 *.egg-info/
-out
+out/
+output/
+output-kiddie/

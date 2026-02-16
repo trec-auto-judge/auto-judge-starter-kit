@@ -264,8 +264,10 @@ auto-judge run \
     --workflow judges/naive/workflow.yml \
     --rag-responses data/kiddie/runs/repgen/ \
     --rag-topics data/kiddie/topics/kiddie-topics.jsonl \
-    --out-dir ./output/
+    --out-dir ./output-kiddie/
 ```
+
+Or run the included smoke test script which also does meta-evaluation: `bash run_kiddie.sh`
 
 ## Running Against Multiple Datasets
 
@@ -300,9 +302,10 @@ The `data/kiddie/eval/` directory contains a synthetic ground-truth leaderboard 
 ```bash
 auto-judge-evaluate meta-evaluate \
     --truth-leaderboard data/kiddie/eval/kiddie_fake.eval.ir_measures.txt \
-    --truth-format ir_measures \
-    --eval-format tot -i ./output/*eval.txt \
-    --correlation kendall --on-missing default
+    --truth-format ir_measures --truth-header \
+    --eval-format tot \
+    --on-missing default \
+    output-kiddie/*.eval.txt
 ```
 
 For real evaluation, obtain official TREC datasets separately.
@@ -345,6 +348,7 @@ For real evaluation, obtain official TREC datasets separately.
 auto-judge-starterkit/
 ├── pyproject.toml           # Dependencies and package config
 ├── README.md                # This file
+├── run_kiddie.sh            # End-to-end smoke test on kiddie
 ├── judges/
 │   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)
 │   ├── naive/               # Simple baseline judge
