@@ -2,7 +2,9 @@
 
 A forkable template repository with example Auto-Judge implementations for building custom judges.
 
+**New here?** See the [Developer How-To](DEVELOPER_HOWTO.md) for a step-by-step guide from fork to submission.
 
+**Using [Claude Code](https://docs.anthropic.com/en/docs/claude-code)?** Type **"Setup checklist"** to get an interactive walkthrough of all setup steps in your new repository.
 
 <p align="center">
    <img width=120px src="https://trec-auto-judge.cs.unh.edu/media/trec-auto-judge-logo-small.png">
