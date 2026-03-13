@@ -10,8 +10,8 @@ A forkable template repository with example Auto-Judge implementations for build
    <img width=120px src="https://trec-auto-judge.cs.unh.edu/media/trec-auto-judge-logo-small.png">
    <br/>
    <br/>
-   <a href="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml">
-   <img alt="Tests" src="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml/badge.svg"/>
+   <a href="https://github.com/trec-auto-judge/auto-judge-starter-kit/actions/workflows/tests.yml">
+   <img alt="Tests" src="https://github.com/trec-auto-judge/auto-judge-starter-kit/actions/workflows/tests.yml/badge.svg"/>
    </a>
    <a href="tests">
    <img alt="Coverage" src="tests/coverage.svg"/>

@@ -1,0 +1,15 @@
+{
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "runArgs": [
+        "--network=host",
+        "--privileged"
+    ]
+}
