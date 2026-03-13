@@ -1,3 +1,14 @@
+---
+configs:
+- config_name: inputs
+- config_name: truths
+
+tira_configs:
+    resolve_inputs_to: "."
+    resolve_truths_to: "."
+    baseline:
+---
+
 # Sample Datasets
 
 This directory contains **synthetic datasets** for development and testing purposes only.

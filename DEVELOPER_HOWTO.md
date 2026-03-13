@@ -72,7 +72,7 @@ dependencies = [
 ```
 
 **Keep these unchanged:**
-- `[tool.setuptools.packages.find]` with `include = ["judges*"]` -- this is how your judge package gets discovered
+- `[tool.setuptools.packages.find]` with `include = ["judges*"]` &mdash; this is how your judge package gets discovered
 - The optional dependency groups (`test`, `minima-llm`, `evaluate`, etc.) unless you need to modify them
 
 After editing, refresh your environment:
@@ -102,10 +102,10 @@ Create a new directory under `judges/`:
 judges/myjudge/
   __init__.py
   my_judge.py       # your judge class(es)
-  workflow.yml       # workflow configuration
+  workflow.yml      # workflow configuration
 ```
 
-Don't forget to `git add judges/myjudge/` -- new directories are untracked by default.
+Don't forget to `git add judges/myjudge/` &mdash; new directories are untracked by default.
 
 **Example judges** (`judges/naive/`, `judges/tinyjudge/`, `judges/complete_example/`, `judges/pyterrier_retrieval/`) are useful as reference during development. **Delete them before submission** (see [Section 8](#8-submission)).
 
@@ -202,7 +202,7 @@ You can also use separate classes for each phase (see `judges/complete_example/w
 
 ### Important Conventions
 
-- **Use `llm_config`**: Never hardcode API keys or endpoints. Use the `llm_config` parameter passed to your methods. See the README's [LLM Configuration](#) section.
+- **Use `llm_config`**: Never hardcode API keys or endpoints. Use the `llm_config` parameter passed to your methods. See the README's [LLM Configuration](./README.md#llm-configuration) section.
 - **Deterministic ordering**: Sort responses by `run_id` before creating comparison pairs to ensure consistent cache keys and reproducible results.
 - **`{_name}` in filebase**: Using `filebase: "{_name}"` in workflow.yml automatically names output files after the variant/sweep name being run.
 
