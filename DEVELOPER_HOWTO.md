@@ -1,7 +1,7 @@
-# Developer How-To: Building a Judge from the Starterkit
+# Developer How-to: Building a Judge From the Starter Kit
 
 A practical guide for building your own LLM judge by forking the
-[auto-judge-starterkit](https://github.com/trec-auto-judge/auto-judge-starter-kit).
+[auto-judge-starter-kit](https://github.com/trec-auto-judge/auto-judge-starter-kit).
 Covers the full lifecycle from fork to submission.
 
 ---
@@ -10,14 +10,14 @@ Covers the full lifecycle from fork to submission.
 
 Use this as a progress tracker. Each item links to an elaborated section below.
 
-1. [Fork & clone](#1-fork--clone) the starterkit; set up `upstream` remote
-2. [Update `pyproject.toml`](#2-update-pyprojecttoml) -- rename package, add your dependencies
-3. [Update `README.md`](#3-update-readmemd) -- describe your approach
+1. [Fork & clone](#1-fork--clone) the starter kit; set up `upstream` remote
+2. [Update `pyproject.toml`](#2-update-pyprojecttoml) &mdash; rename package, add your dependencies
+3. [Update `README.md`](#3-update-readmemd) &mdash; describe your approach
 4. [Create your judge directory](#4-create-your-judge-directory) under `judges/`
-5. [Implement your judge](#5-implement-your-judge) -- `judge()`, optionally `create_nuggets()` / `create_qrels()`
+5. [Implement your judge](#5-implement-your-judge) &mdash; `judge()`, optionally `create_nuggets()` / `create_qrels()`
 6. [Run your judge](#6-run-your-judge) on the kiddie dataset to smoke-test
-7. [Meta-evaluate](#7-meta-evaluation) -- correlate with ground truth
-8. [Submit](#8-submission) -- clean up example judges, package for TIRA
+7. [Meta-evaluate](#7-meta-evaluation) &mdash; correlate with ground truth
+8. [Submit](#8-submission) &mdash; clean up example judges, package for TIRA
 
 ---
 
@@ -30,11 +30,11 @@ git clone git@github.com:YOUR_USER/auto-judge-starter-kit.git my-judge
 cd my-judge
 ```
 
-Set up a remote to pull future starterkit updates:
+Set up a remote to pull future starter kit updates:
 
 ```bash
 git remote add upstream https://github.com/trec-auto-judge/auto-judge-starter-kit.git
-git remote -v   # verify: origin = your fork, upstream = starterkit
+git remote -v   # verify: origin = your fork, upstream = starter kit
 ```
 
 To pull upstream changes later:
@@ -45,20 +45,20 @@ git merge upstream/main
 ```
 
 **What comes from where:**
-- **Upstream (starterkit repo)** provides template structure, example judges, test data, and build config.
-- **Library updates** (`autojudge-base`, `minima-llm`, etc.) come via `pip`/`uv pip install --upgrade`. The starterkit pins `autojudge-base>=0.3.2`; pulling upstream gets template changes, not library upgrades.
+- **Upstream (starter kit repo)** provides template structure, example judges, test data, and build config.
+- **Library updates** (`autojudge-base`, `minima-llm`, etc.) come via `pip`/`uv pip install --upgrade`. The starter kit pins `autojudge-base>=0.3.2`; pulling upstream gets template changes, not library upgrades.
 
 
 ## 2. Update `pyproject.toml`
 
 Open `pyproject.toml` and make these changes:
 
-| Field | Change to |
-|-------|-----------|
-| `name` | Your project name (e.g., `"my-awesome-judge"`) |
-| `description` | One-line summary of your approach |
-| `authors` | Your name / team |
-| `project.urls` | Your fork's URL |
+| Field          | Change to                                      |
+|----------------|------------------------------------------------|
+| `name`         | Your project name (e.g., `"my-awesome-judge"`) |
+| `description`  | One-line summary of your approach              |
+| `authors`      | Your name / team                               |
+| `project.urls` | Your fork's URL                                |
 
 **Add your dependencies** under `[project] > dependencies`. For example, if your judge uses DSPy and LiteLLM:
 
@@ -84,12 +84,12 @@ uv pip install -e '.[all]' --refresh
 
 ## 3. Update README.md
 
-Replace the starterkit overview with your project's description:
+Replace the starter kit overview with your project's description:
 
 - Motivation and approach of your judge
 - Citations / references for your method
-- Your judge's variants, settings, and how to interpret output
-- Brief acknowledgment that this was built on the auto-judge-starterkit
+- Your judge's variants, settings, and how to interpret the output
+- Brief acknowledgment that this was built on the auto-judge-starter-kit
 
 Remove the descriptions of example judges (NaiveJudge, TinyJudge, etc.) since those won't ship with your submission.
 

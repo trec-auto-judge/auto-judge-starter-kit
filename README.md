@@ -1,4 +1,4 @@
-# Auto-Judge Starterkit
+# Auto-Judge Starter Kit
 
 A forkable template repository with example Auto-Judge implementations for building custom judges.
 
@@ -55,7 +55,7 @@ conditions.
 
 
 
-## What is this code for?
+## What Is This Code For?
 
 This project provides a means to evaluate AutoJudge approaches and provide a system ranking / leaderboard.
 
@@ -72,25 +72,24 @@ This code will handle obtaining data sets (akin to `ir_datasets`), input/output 
 1. Fork this repository
 2. Clone
 3. Create and activate venv
-```
-  uv venv
-  source .venv/bin/activate   # Use this to restart your session
-```
+    ```bash
+    uv venv
+    source .venv/bin/activate   # Use this to restart your session
+    ```
 4. Minimal install via `uv pip`  (`pip` should also work)
-```
-uv pip install -e .
-```
-
-4. Optional: installation with all extra tools (includes `auto-judge-evaluate`  )
-```
-uv pip install -e ".[all]"
-```
+    ```bash
+    uv pip install -e .
+    ```
+5. Optional: installation with all extra tools (includes `auto-judge-evaluate`  )
+    ```bash
+    uv pip install -e ".[all]"
+    ```
 
 
 
 #### Selecting Tools and Dependencies
 
- `uv pip install -e ".[all]"` installs all of the below.
+`uv pip install -e ".[all]"` installs all of the below.
  
 If you want to be selective in installing tools
 
@@ -99,13 +98,13 @@ If you want to be selective in installing tools
 * PyTerrier retrieval  (used by PyTerrier retrieval judge) `uv pip install -e ".[pyterrier]"`
 * Pytest unittest infrastructure `uv pip install -e ".[test]"  `
 
-### Add your own Dependencies
+### Add Your Own Dependencies
 
 Add your own dependencies in `pyproject.toml` under `[project] > dependencies`. 
 
 After modification fetch dependencies, replacing `all` with selected tools and adding  `--refresh` to avoid stale package caches
 
-```
+```bash
 uv pip install -e ".[all]" --refresh
 ```
 

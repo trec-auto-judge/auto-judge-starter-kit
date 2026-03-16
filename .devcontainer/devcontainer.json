@@ -1,5 +1,8 @@
 {
-    "dockerFile": "Dockerfile",
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": ".."
+    },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -8,8 +11,5 @@
             ]
         }
     },
-    "runArgs": [
-        "--network=host",
-        "--privileged"
-    ]
+    "postCreateCommand": "uv pip install --system -e .[all]"
 }

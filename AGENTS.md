@@ -1,4 +1,4 @@
-# Instructions for Agents — Auto-Judge Starterkit
+# Instructions for Agents &mdash; Auto-Judge Starterkit
 
 ## Project Overview
 
@@ -8,15 +8,15 @@ This is a fork of the [auto-judge-starterkit](https://github.com/trec-auto-judge
 
 **On first interaction**, check which of these steps have been completed and remind the developer of remaining items. Use `DEVELOPER_HOWTO.md` for detailed guidance on each step.
 
-1. **pyproject.toml updated** — `name` changed from `auto-judge-starterkit`, own dependencies added
-2. **README.md updated** — describes this judge's approach (not the starterkit examples)
-3. **Judge directory created** — new directory under `judges/` with `__init__.py`, judge module, `workflow.yml`
-4. **Judge implemented** — `judge()` method returns a `Leaderboard`; optionally `create_nuggets()` and `create_qrels()`
-5. **Runs on kiddie dataset** — `auto-judge run --workflow judges/MYJUDGE/workflow.yml --rag-responses data/kiddie/runs/repgen/ --rag-topics data/kiddie/topics/kiddie-topics.jsonl --out-dir ./output-kiddie/`
-6. **Meta-evaluation tested** — `auto-judge-evaluate meta-evaluate` produces output without errors
-7. **Example judges deleted before submission** — remove `judges/naive/`, `judges/tinyjudge/`, `judges/complete_example/`, `judges/pyterrier_retrieval/`
+1. **pyproject.toml updated** &mdash; `name` changed from `auto-judge-starterkit`, own dependencies added
+2. **README.md updated** &mdash; describes this judge's approach (not the starterkit examples)
+3. **Judge directory created** &mdash; new directory under `judges/` with `__init__.py`, judge module, `workflow.yml`
+4. **Judge implemented** &mdash; `judge()` method returns a `Leaderboard`; optionally `create_nuggets()` and `create_qrels()`
+5. **Runs on kiddie dataset** &mdash; `auto-judge run --workflow judges/MYJUDGE/workflow.yml --rag-responses data/kiddie/runs/repgen/ --rag-topics data/kiddie/topics/kiddie-topics.jsonl --out-dir ./output-kiddie/`
+6. **Meta-evaluation tested** &mdash; `auto-judge-evaluate meta-evaluate` produces output without errors
+7. **Example judges deleted before submission** &mdash; remove `judges/naive/`, `judges/tinyjudge/`, `judges/complete_example/`, `judges/pyterrier_retrieval/`
 
-If `pyproject.toml` still has `name = "auto-judge-starterkit"`, the fork has not been customized yet — prompt the developer to start with steps 1-3.
+If `pyproject.toml` still has `name = "auto-judge-starterkit"`, the fork has not been customized yet &mdash; prompt the developer to start with steps 1-3.
 
 ## Interactive Setup
 
@@ -41,14 +41,14 @@ On **"Setup checklist"**: Walk through the fork checklist interactively, one ste
 
 ### Step 4: Judge implementation
 - If judge directory exists, read the judge module. Check whether `judge()` method exists and returns a `Leaderboard`.
-- Check for `create_nuggets()` and `create_qrels()` if workflow.yml enables them.
+- Check for `create_nuggets()` and `create_qrels()` if `workflow.yml` enables them.
 - Reference: `DEVELOPER_HOWTO.md` section "5. Implement Your Judge" for minimal and full protocol templates.
 - Also read `judges/complete_example/` for the full protocol pattern, or `judges/tinyjudge/` for the minimal LLM pattern.
 - Ask: *Does your judge need nuggets, qrels, or just a leaderboard?*
 
 ### Step 5: Run on kiddie
 - Check if `output-kiddie/` exists and contains `.eval.txt` files from this judge.
-- If not, show the run command with the developer's actual workflow.yml path.
+- If not, show the run command with the developer's actual `workflow.yml` path.
 - Reference: `DEVELOPER_HOWTO.md` section "6. Run Your Judge" for LLM config and dev flags.
 - Reference: `run_kiddie.sh` for the smoke-test pattern.
 - Ask: *Ready to run? Do you have your LLM endpoint configured?* (Show env var checklist if judge uses LLM.)
@@ -58,7 +58,7 @@ On **"Setup checklist"**: Walk through the fork checklist interactively, one ste
 - Check if meta-evaluate has been run (look for correlation output).
 - Show the meta-evaluate command with the developer's actual output files.
 - Reference: `DEVELOPER_HOWTO.md` section "7. Meta-Evaluation".
-- Note: kiddie ground truth is synthetic — useful for pipeline validation only.
+- Note: kiddie ground truth is synthetic &mdash; useful for pipeline validation only.
 
 ### Step 7: Submission cleanup
 - List `judges/*/` directories. Flag any starterkit examples still present.
@@ -98,9 +98,9 @@ auto-judge-evaluate meta-evaluate \
 
 ## Key References
 
-- [DEVELOPER_HOWTO.md](DEVELOPER_HOWTO.md) — full step-by-step guide
-- [autojudge-base workflow README](https://github.com/trec-auto-judge/auto-judge-base/tree/main/src/autojudge_base/workflow/README.md) — lifecycle flags, variants, sweeps
-- [autojudge-base](https://github.com/trec-auto-judge/auto-judge-base) — data classes (`Report`, `Request`, `Leaderboard`, `NuggetBanks`)
-- [minima-llm](https://github.com/trec-auto-judge/minima-llm) — LLM backend configuration
-- `judges/complete_example/` — full protocol example (nuggets + qrels + leaderboard)
-- [documentation/README.md](documentation/README.md) — TIRA submission instructions
+- [DEVELOPER_HOWTO.md](DEVELOPER_HOWTO.md) &mdash; full step-by-step guide
+- [autojudge-base workflow README](https://github.com/trec-auto-judge/auto-judge-base/tree/main/src/autojudge_base/workflow/README.md) &mdash; lifecycle flags, variants, sweeps
+- [autojudge-base](https://github.com/trec-auto-judge/auto-judge-base) &mdash; data classes (`Report`, `Request`, `Leaderboard`, `NuggetBanks`)
+- [minima-llm](https://github.com/trec-auto-judge/minima-llm) &mdash; LLM backend configuration
+- `judges/complete_example/` &mdash; full protocol example (nuggets + qrels + leaderboard)
+- [documentation/README.md](documentation/README.md) &mdash; TIRA submission instructions
