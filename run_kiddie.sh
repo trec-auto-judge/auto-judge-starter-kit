@@ -39,7 +39,7 @@ if command -v auto-judge-evaluate &>/dev/null; then
     auto-judge-evaluate meta-evaluate \
         --truth-leaderboard "${TRUTH}" \
         --truth-format ir_measures --truth-header \
-        --eval-format tot \
+        --eval-format ir_measures \
         --on-missing default \
         "${OUTDIR}"/*.eval.txt
 else
