@@ -13,5 +13,5 @@ WORKDIR /auto-judge
 
 RUN uv pip install --system -e .
 
-RUN python3 -c 'import nltk; nltk.download("stopwords")'
+RUN python3 -c 'import nltk; nltk.download("stopwords"); nltk.download("punkt");'
 
