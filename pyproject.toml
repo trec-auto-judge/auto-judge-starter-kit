@@ -46,8 +46,12 @@ pyterrier = [
 evaluate = [
     "autojudge-evaluate>=0.3.10",
 ]
+ir-axioms = [
+    "python-terrier>=0.10",
+    "ir-axioms>=1.1.1",
+]
 all = [
-    "auto-judge-starterkit[minima-llm,pyterrier,evaluate,test]",
+    "auto-judge-starterkit[minima-llm,pyterrier,evaluate,test,ir-axioms]",
 ]
 
 [project.urls]
