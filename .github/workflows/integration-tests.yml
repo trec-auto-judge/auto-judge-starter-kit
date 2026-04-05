@@ -3,8 +3,6 @@ name: Integration Tests
 on:
   push:
     branches:
-      - main
-      - staging
 
 jobs:
   tests:
@@ -48,3 +46,18 @@ jobs:
             --task trec-auto-judge \
             --dataset kiddie-20260403-training \
             --command 'auto-judge run --workflow /auto-judge/judges/pyterrier_retrieval/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
+
+      - name: Test judges/ir_axioms
+        run: |
+          pip3 install huggingface_hub
+          hf download facebook/fasttext-en-vectors
+
+          tira-cli code-submission \
+            --dry-run \
+            --path . \
+            --mount-hf-model facebook/fasttext-en-vectors \
+            --file judges/ir_axioms/Dockerfile \
+            --task trec-auto-judge \
+            --dataset kiddie-20260403-training \
+            --command 'echo 127.0.0.1\ localhost >> /etc/hosts; auto-judge run --workflow /auto-judge/judges/ir_axioms/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
+
