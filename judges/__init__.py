@@ -1,1 +1,1 @@
-# AutoJudge Starterkit - Example Judges
+# AutoJudge Starter Kit - Example Judges
