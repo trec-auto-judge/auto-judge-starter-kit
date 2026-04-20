@@ -51,10 +51,12 @@ def run_workflow(
     runs_filter: str,
     topics_filter: str,
     extra_args: List[str],
+    variant: str | None = None,
 ) -> bool:
     """Run the workflow against a single dataset. Returns True on success."""
-    # Include runs/topics in output path to separate results
-    dataset_out: Path = out_dir / f"{dataset.name}-{runs_filter}-{topics_filter}"
+    # Include runs/topics (and variant, if set) in output path to separate results
+    suffix: str = f"-{variant}" if variant else "-default"
+    dataset_out: Path = out_dir / f"{dataset.name}{suffix}-{runs_filter}-{topics_filter}"
     dataset_out.mkdir(parents=True, exist_ok=True)
 
     cmd: List[str] = [
@@ -64,6 +66,8 @@ def run_workflow(
         "--rag-topics", dataset.topics,
         "--out-dir", str(dataset_out),
     ]
+    if variant:
+        cmd.extend(["--variant", variant])
 
     # Add run filtering
     if runs_filter == "prio1" and dataset.prio1_runs:
@@ -99,6 +103,7 @@ def main() -> None:
     parser.add_argument("--workflow", "-w", required=True, help="Path to workflow.yml")
     parser.add_argument("--datasets", "-d", default="datasets.yml", help="Path to datasets.yml config (default: datasets.yml)")
     parser.add_argument("--out-dir", "-o", default="./output", help="Base output directory")
+    parser.add_argument("--variant", "-v", default=None, help="Workflow variant to run (optional; omit to use the workflow's default)")
     parser.add_argument(
         "--runs", "-r",
         choices=["all", "prio1"],
@@ -167,26 +172,32 @@ def main() -> None:
         print(f"  - {d.name}{info_str}")
 
     if args.dry_run:
+        suffix: str = f"-{args.variant}" if args.variant else "-default"
         for dataset in datasets:
             print(f"\nWould run: {dataset.name}")
             cmd_parts: List[str] = [
                 f"auto-judge run --workflow {workflow}",
                 f"--rag-responses {dataset.responses}",
                 f"--rag-topics {dataset.topics}",
-                f"--out-dir {out_dir / f'{dataset.name}-{args.runs}-{args.topics}'}",
+                f"--out-dir {out_dir / f'{dataset.name}{suffix}-{args.runs}-{args.topics}'}",
             ]
+            if args.variant:
+                cmd_parts.append(f"--variant {args.variant}")
             if args.runs == "prio1" and dataset.prio1_runs:
                 cmd_parts.append(f"--run {' --run '.join(dataset.prio1_runs)}")
             if args.topics == "assessed" and dataset.assessed_topics:
                 cmd_parts.append(f"--topic {' --topic '.join(dataset.assessed_topics)}")
+            if extra:
+                cmd_parts.append(" ".join(extra))
             print("  " + " \\\n    ".join(cmd_parts))
         return
 
     # Run each dataset
     results: Dict[str, str] = {}
+    key_suffix: str = f"-{args.variant}" if args.variant else "-default"
     for dataset in datasets:
-        key: str = f"{dataset.name}-{args.runs}-{args.topics}"
-        success: bool = run_workflow(workflow, dataset, out_dir, args.runs, args.topics, extra)
+        key: str = f"{dataset.name}{key_suffix}-{args.runs}-{args.topics}"
+        success: bool = run_workflow(workflow, dataset, out_dir, args.runs, args.topics, extra, variant=args.variant)
         results[key] = "OK" if success else "FAILED"
 
         # Fail fast unless --keep-going
