@@ -82,7 +82,7 @@ datasets:
       - '72'
       - '84'
       - '897'
-
+    corpus: ./data/corpus/msmarco_v2.1_doc_segmented
 
   # Ragtime25
   - name: ragtime25
@@ -119,6 +119,7 @@ datasets:
     - '1053'
     - '1065'
     - '1069'
+    corpus: ./data/corpus/ragtime/mlir.mt.jsonl
 
   # Dragun25
   - name: dragun25
@@ -168,3 +169,4 @@ datasets:
     - msmarco_v2.1_doc_55_248024230
     - msmarco_v2.1_doc_57_933363597
     - msmarco_v2.1_doc_58_74865589
+    corpus: ./data/corpus/msmarco_v2.1_doc_segmented

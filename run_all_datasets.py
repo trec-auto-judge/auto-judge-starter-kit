@@ -27,6 +27,7 @@ class Dataset:
     prio1_runs: List[str] = field(default_factory=list)      # Run IDs for --runs prio1
     assessed_topics: List[str] = field(default_factory=list)  # Topic IDs for --topics assessed
     truth: str | None = None    # Optional: path to truth leaderboard for meta-evaluation
+    corpus: str | None = None   # Optional (recommended): document corpus path or ir-datasets ID
 
 
 def load_datasets(config_path: Path) -> List[Dataset]:
@@ -43,6 +44,7 @@ def load_datasets(config_path: Path) -> List[Dataset]:
             prio1_runs=entry.get("prio1_runs", []) or [],
             assessed_topics=entry.get("assessed_topics", []) or [],
             truth=entry.get("truth"),
+            corpus=entry.get("corpus"),
         ))
     return datasets
 
@@ -98,6 +100,12 @@ def run_workflow(
     ]
     if variant:
         cmd.extend(["--variant", variant])
+
+    # Add corpus (optional but recommended)
+    if dataset.corpus:
+        cmd.extend(["--corpus", dataset.corpus])
+    else:
+        print(f"Note: no 'corpus' configured for {dataset.name} in datasets.yml (recommended for nugget/qrels/judge that consult source documents)")
 
     # Add run filtering
     if runs_filter == "prio1" and dataset.prio1_runs:
@@ -224,6 +232,10 @@ def main() -> None:
             ]
             if args.variant:
                 cmd_parts.append(f"--variant {args.variant}")
+            if dataset.corpus:
+                cmd_parts.append(f"--corpus {dataset.corpus}")
+            else:
+                print(f"  Note: no 'corpus' configured for {dataset.name}")
             if args.runs == "prio1" and dataset.prio1_runs:
                 cmd_parts.append(f"--run {' --run '.join(dataset.prio1_runs)}")
             if args.topics == "assessed" and dataset.assessed_topics:

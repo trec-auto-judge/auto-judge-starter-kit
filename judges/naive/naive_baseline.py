@@ -40,6 +40,7 @@ class NaiveJudge(AutoJudge):
         rag_topics: Sequence[Request],
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
+        corpus: Optional[str] = None,
         **kwargs: Any,
     ) -> Optional[NuggetBanksProtocol]:
         return None
@@ -50,6 +51,7 @@ class NaiveJudge(AutoJudge):
         rag_topics: Sequence[Request],
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
+        corpus: Optional[str] = None,
         **kwargs: Any,
     ) -> Optional[Qrels]:
         return None
@@ -61,10 +63,11 @@ class NaiveJudge(AutoJudge):
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         qrels: Optional[Qrels] = None,
+        corpus: Optional[str] = None,
         **kwargs: Any,
     ) -> Leaderboard:
         builder: LeaderboardBuilder = LeaderboardBuilder(NAIVE_LEADERBOARD_SPEC)
-
+        
         for rag_response in tqdm(rag_responses, "Process RAG Responses"):
             vals: Dict[str, float] = {
                 "LENGTH": len(rag_response.get_report_text().split()),
