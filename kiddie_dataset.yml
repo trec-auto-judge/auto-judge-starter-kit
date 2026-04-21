@@ -1,0 +1,5 @@
+datasets:
+  - name: kiddie                                                                                                                                                                                     
+    responses: ./data/kiddie/runs/repgen/                                                                                                                                                              
+    topics: ./data/kiddie/topics/kiddie-topics.jsonl                                                                                                                                                   
+    truth: ./data/kiddie/eval/kiddie_fake.eval.ir_measures.txt                    

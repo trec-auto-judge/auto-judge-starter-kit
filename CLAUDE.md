@@ -85,7 +85,7 @@ bash run_kiddie.sh
 auto-judge-evaluate meta-evaluate \
     --truth-leaderboard data/kiddie/eval/kiddie_fake.eval.ir_measures.txt \
     --truth-format ir_measures --truth-header \
-    --eval-format tot --on-missing default \
+    --eval-format ir_measures --on-missing default \
     output-kiddie/*.eval.txt
 ```
 
