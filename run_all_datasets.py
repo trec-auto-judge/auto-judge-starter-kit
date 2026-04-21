@@ -165,6 +165,8 @@ def main() -> None:
         default="all",
         help="Which topics to evaluate: all (default) or assessed (uses assessed_topics from config)"
     )
+    parser.add_argument("--dataset", "-D", action="append", default=[], metavar="NAME",
+                        help="Restrict to dataset(s) by name (repeatable). Default: all datasets in the config.")
     parser.add_argument("--dry-run", action="store_true", help="Print commands without executing")
     parser.add_argument("--keep-going", "-k", action="store_true", help="Continue on errors instead of failing fast")
 
@@ -186,6 +188,17 @@ def main() -> None:
 
     all_datasets: List[Dataset] = load_datasets(datasets_path)
     out_dir: Path = Path(args.out_dir)
+
+    # Restrict to user-specified dataset names (if any)
+    if args.dataset:
+        known_names: set[str] = {d.name for d in all_datasets}
+        unknown: List[str] = [n for n in args.dataset if n not in known_names]
+        if unknown:
+            print(f"Error: unknown dataset name(s): {', '.join(unknown)}", file=sys.stderr)
+            print(f"Available: {', '.join(sorted(known_names))}", file=sys.stderr)
+            sys.exit(1)
+        requested: set[str] = set(args.dataset)
+        all_datasets = [d for d in all_datasets if d.name in requested]
 
     # Filter datasets that have the required filter lists
     datasets: List[Dataset] = []
