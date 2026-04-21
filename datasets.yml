@@ -1,0 +1,170 @@
+# Dataset configuration for run_all_datasets.py
+#
+# Each dataset entry specifies:
+#   name: identifier for the dataset
+#   responses: path to responses directory
+#   topics: path to topics file (JSONL)
+#   prio1_runs: (optional) list of run IDs for --runs prio1
+#   assessed_topics: (optional) list of topic IDs for --topics assessed
+
+datasets:
+  # RAG25
+  - name: rag25-gen
+    responses: ./data/rag-export/runs/generation/
+    topics: ./data/rag-export/topics/trec_rag_2025_requests.jsonl
+    prio1_runs:
+      - dus
+      - voz
+      - gok
+      - lel
+      - ken
+      - nan
+      - hih
+      - clover
+      - ruz
+    assessed_topics:
+      - '14'
+      - '144'
+      - '161'
+      - '200'
+      - '213'
+      - '219'
+      - '224'
+      - '225'
+      - '233'
+      - '273'
+      - '300'
+      - '31'
+      - '37'
+      - '407'
+      - '477'
+      - '499'
+      - '515'
+      - '58'
+      - '707'
+      - '72'
+      - '84'
+      - '897'
+
+  - name: rag25-auggen
+    responses: ./data/rag-export/runs/auggen/
+    topics: ./data/rag-export/topics/trec_rag_2025_requests.jsonl
+    prio1_runs:
+      - dus
+      - voz
+      - gok
+      - lel
+      - ken
+      - nan
+      - hih
+      - clover
+      - ruz
+    assessed_topics:
+      - '14'
+      - '144'
+      - '161'
+      - '200'
+      - '213'
+      - '219'
+      - '224'
+      - '225'
+      - '233'
+      - '273'
+      - '300'
+      - '31'
+      - '37'
+      - '407'
+      - '477'
+      - '499'
+      - '515'
+      - '58'
+      - '707'
+      - '72'
+      - '84'
+      - '897'
+
+
+  # Ragtime25
+  - name: ragtime25
+    responses: ./data/ragtime-export/runs/repgen/
+    topics:  ./data/ragtime-export/topics/ragtime25_main_all.jsonl 
+    prio1_runs:
+    - yak
+    - plum
+    - rose
+    - hen
+    - ewe
+    - berry
+    - lichen
+    - radish
+    - maple
+    - frog
+    - nut
+    - yew
+    - okra
+    assessed_topics:
+    - '1001'
+    - '1003'
+    - '1005'
+    - '1007'
+    - '1009'
+    - '1011'
+    - '1013'
+    - '1017'
+    - '1025'
+    - '1027'
+    - '1029'
+    - '1033'
+    - '1041'
+    - '1053'
+    - '1065'
+    - '1069'
+
+  # Dragun25
+  - name: dragun25
+    responses: ./data/dragun-export/runs/repgen/
+    topics: ./data/dragun-export/topics/trec-2025-dragun-requests-generated.jsonl
+    prio1_runs:
+    - bab
+    - das
+    - doc
+    - rir
+    - mun
+    - noh
+    - fus
+    - zar
+    - san
+    - dim
+    - sed
+    - dag
+    assessed_topics:
+    - msmarco_v2.1_doc_04_420132660
+    - msmarco_v2.1_doc_06_1440134319
+    - msmarco_v2.1_doc_08_300872161
+    - msmarco_v2.1_doc_15_116067546
+    - msmarco_v2.1_doc_21_861891150
+    - msmarco_v2.1_doc_22_1648697797
+    - msmarco_v2.1_doc_25_481628070
+    - msmarco_v2.1_doc_25_501708725
+    - msmarco_v2.1_doc_25_502424913
+    - msmarco_v2.1_doc_34_2529216
+    - msmarco_v2.1_doc_34_7751734
+    - msmarco_v2.1_doc_35_1300032609
+    - msmarco_v2.1_doc_35_441326441
+    - msmarco_v2.1_doc_38_227081897
+    - msmarco_v2.1_doc_39_1014551192
+    - msmarco_v2.1_doc_39_1165221603
+    - msmarco_v2.1_doc_41_1960853470
+    - msmarco_v2.1_doc_42_654618974
+    - msmarco_v2.1_doc_47_1430382251
+    - msmarco_v2.1_doc_48_1289995263
+    - msmarco_v2.1_doc_48_273997000
+    - msmarco_v2.1_doc_48_515083157
+    - msmarco_v2.1_doc_48_515287844
+    - msmarco_v2.1_doc_48_730773621
+    - msmarco_v2.1_doc_52_1666095905
+    - msmarco_v2.1_doc_54_1547893878
+    - msmarco_v2.1_doc_54_304836636
+    - msmarco_v2.1_doc_55_248024230
+    - msmarco_v2.1_doc_57_933363597
+    - msmarco_v2.1_doc_58_74865589

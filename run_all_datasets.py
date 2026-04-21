@@ -93,6 +93,14 @@ def run_workflow(
     print(f"{'='*60}\n")
 
     result: subprocess.CompletedProcess[bytes] = subprocess.run(cmd)
+    if result.returncode == 0:
+        produced: List[Path] = sorted(p for p in dataset_out.iterdir() if p.is_file())
+        print(f"\n=== Output files in {dataset_out} ({len(produced)}) ===")
+        if produced:
+            for p in produced:
+                print(f"  {p.name}")
+        else:
+            print("  (no files produced)")
     return result.returncode == 0
 
 
