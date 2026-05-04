@@ -205,6 +205,7 @@ You can also use separate classes for each phase (see `judges/complete_example/w
 - **Use `llm_config`**: Never hardcode API keys or endpoints. Use the `llm_config` parameter passed to your methods. See the README's [LLM Configuration](#) section.
 - **Deterministic ordering**: Sort responses by `run_id` before creating comparison pairs to ensure consistent cache keys and reproducible results.
 - **`{_name}` in filebase**: Using `filebase: "{_name}"` in workflow.yml automatically names output files after the variant/sweep name being run.
+- **`filebase` and `outdir` parameters**: All judge methods receive these auto-filled parameters for constructing output paths. Include them explicitly: `filebase: str = "default", outdir: Path = Path(".")`
 
 
 ## 6. Run Your Judge

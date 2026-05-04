@@ -319,20 +319,24 @@ For real evaluation, obtain official TREC datasets separately.
 
 2. **Implement the protocol**: Your judge class needs:
    ```python
+   from pathlib import Path
    from autojudge_base import AutoJudge, Leaderboard, Report, Request
 
    class MyJudge(AutoJudge):
        nugget_banks_type = NuggetBanks
 
-       def create_nuggets(self, rag_responses, rag_topics, llm_config, **kwargs):
+       def create_nuggets(self, rag_responses, rag_topics, llm_config,
+                          filebase: str = "default", outdir: Path = Path("."), **kwargs):
            # Optional: create nugget questions
            return None
 
-       def create_qrels(self, rag_responses, rag_topics, llm_config, **kwargs):
+       def create_qrels(self, rag_responses, rag_topics, llm_config,
+                        filebase: str = "default", outdir: Path = Path("."), **kwargs):
            # Optional: create relevance judgments
            return None
 
-       def judge(self, rag_responses, rag_topics, llm_config, **kwargs):
+       def judge(self, rag_responses, rag_topics, llm_config,
+                 filebase: str = "default", outdir: Path = Path("."), **kwargs):
            # Required: produce leaderboard
            return leaderboard
    ```
