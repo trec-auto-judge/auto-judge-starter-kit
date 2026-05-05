@@ -1,0 +1,18 @@
+{
+  "image": "mam10eks/trec-auto-judge-base:dev-0.0.1",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ]
+    },
+    "codespaces": {
+      "openFiles":[
+        "README.md"
+      ]
+    }
+  }
+}
