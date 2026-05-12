@@ -37,6 +37,17 @@ jobs:
             --dataset kiddie-20260403-training \
             --command 'auto-judge run --workflow /auto-judge/judges/naive/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
 
+      - name: Test judges/tinyjudge
+        run: |
+          tira-cli code-submission \
+            --dry-run \
+            --path . \
+            --forward-environment-variable OPENAI_BASE_URL OPENAI_MODEL OPENAI_API_KEY \
+            --file judges/tinyjudge/Dockerfile \
+            --task trec-auto-judge \
+            --dataset kiddie-20260403-training \
+            --command 'auto-judge run --workflow /auto-judge/judges/tinyjudge/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
+
       - name: Test judges/pyterrier_retrieval
         run: |
           tira-cli code-submission \
