@@ -20,77 +20,70 @@ judges:
 
     measures:
       - name: GEN-TFC1
-        description: TBD
+        description: Prefer responses with more query term occurrences.
 
       - name: GEN-LNC1
-        description: TBD
+        description: Penalize longer responses for non-relevant terms.
 
       - name: GEN-REG
-        description: TBD
+        description: Prefer responses covering more different query aspects.
 
       - name: GEN-AND
-        description: TBD
-
-      - name: GEN-DIV
-        description: TBD
+        description: Prefer responses containing all query terms.
 
       - name: GEN-STMC1
-        description: TBD
+        description: Prefer responses with terms more similar to query terms.
 
       - name: GEN-STMC2
-        description: TBD
+        description: Do not reward similar terms more than exact matches.
 
       - name: GEN-PROX1
-        description: TBD
+        description: Prefer responses with shorter distance between query term pairs.
 
       - name: GEN-PROX2
-        description: TBD
+        description: Prefer responses with earlier query term occurrences.
 
       - name: GEN-PROX3
-        description: TBD
+        description: Prefer responses where the query occurs earlier as a phrase.
 
       - name: GEN-PROX4
-        description: TBD
+        description: Prefer responses that contain all query terms in a shorter substring.
 
       - name: GEN-PROX5
-        description: TBD
-
-      - name: GEN-aSL
-        description: TBD
+        description: Prefer responses where the query terms are closer together on average.
 
       - name: GEN-TF-LNC
-        description: TBD
+        description: Reward additional query terms more than document length is penalized.
 
       - name: COH1-0.75
-        description: TBD
+        description: Prefer responses with less variance in avg. word length across sentences.
 
       - name: COH2-0.75
-        description: TBD
+        description: Prefer responses with subject–verb pairs closer together.
 
       - name: COV1-SE-0.5
-        description: TBD
+        description: Prefer responses with more extracted aspects.
 
       - name: COV2-SE-0.5
-        description: TBD
+        description: Prefer responses with less redundant extracted aspects.
 
       - name: COV3-SE-0.5
-        description: TBD
+        description: Prefer responses with more sentences covering aspects from the query.
 
       - name: CONS1-SE-0.5
-        description: TBD
+        description: Prefer responses with  more sentences covering aspects from the context.
 
       - name: CONS2-0.5
-        description: TBD
+        description: Prefer responses with higher text overlap with contexts.
 
       - name: CONS3-0.5
-        description: TBD
+        description: Penalize aspects mentioned in contradictory phrases.
 
       - name: CORR1-0.75
-        description: TBD
+        description: Prefer responses with more sentences referencing sources.
 
       - name: CLAR1-0.5
-        description: TBD
+        description: Prefer responses with fewer grammar errors.
 
       - name: CLAR2-0.5
-        description: TBD
-
+        description: Prefer responses with better readability.
