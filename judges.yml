@@ -1,0 +1,96 @@
+# Documentation for all Judges
+#
+# Each documentation of a judge needs:
+#   name: The name of the judge
+#   description: A description of the overall idea of the judge
+#   git_remotes: A list of git remotes to which a judge belongs to the judge.
+#   measures: The list of measures provided by the Judge, each with a name and description
+
+judges:
+  IR-Axioms:
+    description: |
+      The IR-Axioms Judge provides axiomatic evaluation for Retrieval Augmented Generation mostly via pairwise comparisons of RAG responses. The RAG Axioms are described in the paper "Axioms for Retrieval-Augmented Generation" by Merker et al. [1] implementd in the ir-axioms package [2].
+
+      References:
+      [1] - https://webis.de/publications.html?q=axiom#merker_2025b
+      [2] - https://github.com/webis-de/ir_axioms
+      [3] - https://github.com/webis-de/ir_axioms/blob/main/docs/rag-axioms.md
+
+    git_remotes: ["git@github.com:trec-auto-judge/auto-judge-starter-kit.git"]
+
+    measures:
+      - name: GEN-TFC1
+        description: TBD
+
+      - name: GEN-LNC1
+        description: TBD
+
+      - name: GEN-REG
+        description: TBD
+
+      - name: GEN-AND
+        description: TBD
+
+      - name: GEN-DIV
+        description: TBD
+
+      - name: GEN-STMC1
+        description: TBD
+
+      - name: GEN-STMC2
+        description: TBD
+
+      - name: GEN-PROX1
+        description: TBD
+
+      - name: GEN-PROX2
+        description: TBD
+
+      - name: GEN-PROX3
+        description: TBD
+
+      - name: GEN-PROX4
+        description: TBD
+
+      - name: GEN-PROX5
+        description: TBD
+
+      - name: GEN-aSL
+        description: TBD
+
+      - name: GEN-TF-LNC
+        description: TBD
+
+      - name: COH1-0.75
+        description: TBD
+
+      - name: COH2-0.75
+        description: TBD
+
+      - name: COV1-SE-0.5
+        description: TBD
+
+      - name: COV2-SE-0.5
+        description: TBD
+
+      - name: COV3-SE-0.5
+        description: TBD
+
+      - name: CONS1-SE-0.5
+        description: TBD
+
+      - name: CONS2-0.5
+        description: TBD
+
+      - name: CONS3-0.5
+        description: TBD
+
+      - name: CORR1-0.75
+        description: TBD
+
+      - name: CLAR1-0.5
+        description: TBD
+
+      - name: CLAR2-0.5
+        description: TBD
+
