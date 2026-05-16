@@ -1,3 +1,4 @@
+# docker build -t mam10eks/trec-auto-judge-base:ir-axioms-0.0.1 -f judges/ir_axioms/Dockerfile .
 # The base image is build from 
 FROM mam10eks/trec-auto-judge-base:dev-0.0.1
 
@@ -8,6 +9,7 @@ RUN . /auto-judge/.venv/bin/activate \
 
 ADD judges /auto-judge/judges
 ADD pyproject.toml /auto-judge/
+ADD .git /auto-judge/
 
 ENV PYTHONPATH=/auto-judge
 
