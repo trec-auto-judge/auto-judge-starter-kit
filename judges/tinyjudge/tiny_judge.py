@@ -7,6 +7,7 @@ This is the simplest possible LLM judge - use it as a starting point.
 """
 
 import asyncio
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from autojudge_base import (
@@ -24,7 +25,7 @@ from minima_llm import MinimaLlmConfig, MinimaLlmRequest, MinimaLlmResponse, Ope
 
 
 TINY_SPEC = LeaderboardSpec(measures=(
-    MeasureSpec("FIRST_SENTENCE_RELEVANT"),
+    MeasureSpec("FIRST_SENTENCE_RELEVANT", description="LLM judgment of first sentence relevance (0.0-1.0)"),
 ))
 
 
@@ -43,6 +44,9 @@ class TinyJudge:
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         qrels: Optional[Qrels] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Leaderboard:
         """Judge first-sentence relevance using LLM (batched for efficiency)."""

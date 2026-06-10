@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Type
 
 from autojudge_base import (
@@ -34,16 +35,16 @@ def group_by_topic_id(rag_responses: Sequence[Report]) -> Dict[str, Dict[str, st
 
 # Some semi-random selected weighting models from http://terrier.org/docs/v4.2/javadoc/org/terrier/matching/models/WeightingModel.html
 LEADERBOARD_SPEC = LeaderboardSpec(measures=(
-    MeasureSpec("BM25"),
-    MeasureSpec("DirichletLM"),
-    MeasureSpec("Hiemstra_LM"),
-    MeasureSpec("DFIC"),
-    MeasureSpec("DPH"),
-    MeasureSpec("DLH"),
-    MeasureSpec("Tf"),
-    MeasureSpec("TF_IDF"),
-    MeasureSpec("PL2"),
-    MeasureSpec("InL2"),
+    MeasureSpec("BM25", description="BM25 retrieval score"),
+    MeasureSpec("DirichletLM", description="Dirichlet language model score"),
+    MeasureSpec("Hiemstra_LM", description="Hiemstra language model score"),
+    MeasureSpec("DFIC", description="Divergence from independence score"),
+    MeasureSpec("DPH", description="Divergence from randomness (DPH)"),
+    MeasureSpec("DLH", description="Divergence from randomness (DLH)"),
+    MeasureSpec("Tf", description="Term frequency score"),
+    MeasureSpec("TF_IDF", description="TF-IDF score"),
+    MeasureSpec("PL2", description="Divergence from randomness (PL2)"),
+    MeasureSpec("InL2", description="Inverse document frequency model (InL2)"),
 ))
 
 
@@ -56,6 +57,9 @@ class RetrievalJudge(AutoJudge):
         rag_topics: Sequence[Request],
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[NuggetBanksProtocol]:
         return None
@@ -66,6 +70,9 @@ class RetrievalJudge(AutoJudge):
         rag_topics: Sequence[Request],
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[Qrels]:
         return None
@@ -77,6 +84,9 @@ class RetrievalJudge(AutoJudge):
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         qrels: Optional[Qrels] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Leaderboard:
         ensure_pyterrier_is_loaded()

@@ -13,6 +13,7 @@ No LLM calls are used - all logic is deterministic based on text length and keyw
 Use this as a reference for building judges that use nuggets and qrels.
 """
 
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Type
 
 from autojudge_base import (
@@ -42,8 +43,8 @@ from autojudge_base.nugget_data import (
 # Define what measures the judge produces and how to aggregate them.
 
 MINIMAL_SPEC = LeaderboardSpec(measures=(
-    MeasureSpec("SCORE"),
-    MeasureSpec("HAS_KEYWORDS"),  # Use 1.0/0.0 for boolean
+    MeasureSpec("SCORE", description="Overall quality score (0.0-1.0)"),
+    MeasureSpec("HAS_KEYWORDS", description="Whether response contains query keywords (1.0=yes, 0.0=no)"),
 ))
 
 
@@ -91,6 +92,9 @@ class ExampleNuggetCreator:
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         # Settings from workflow.yml nugget_settings
         questions_per_topic: int = 3,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[NuggetBanksProtocol]:
         """Create nugget questions for each topic."""
@@ -142,6 +146,9 @@ class ExampleQrelsCreator:
         # Settings from workflow.yml qrels_settings
         grade_range: Tuple[int, int] = (0, 3),
         length_threshold: int = 100,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[Qrels]:
         """Create relevance judgments for each response."""
@@ -191,6 +198,9 @@ class ExampleLeaderboardJudge:
         # Settings from workflow.yml judge_settings
         keyword_bonus: float = 0.2,
         on_missing_evals: str = "fix_aggregate",
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Leaderboard:
         """Judge RAG responses and produce a leaderboard."""

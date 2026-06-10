@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from pathlib import Path
 from typing import Any, Dict, Optional, Sequence, Type
 
 from autojudge_base import (
@@ -26,8 +27,8 @@ def rand(seed: str) -> float:
 
 
 NAIVE_LEADERBOARD_SPEC = LeaderboardSpec(measures=(
-    MeasureSpec("LENGTH"),
-    MeasureSpec("RANDOM"),
+    MeasureSpec("LENGTH", int, description="Total character count of the response"),
+    MeasureSpec("RANDOM", description="Random score for baseline comparison"),
 ))
 
 
@@ -41,6 +42,9 @@ class NaiveJudge(AutoJudge):
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         corpus: Optional[str] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[NuggetBanksProtocol]:
         return None
@@ -52,6 +56,9 @@ class NaiveJudge(AutoJudge):
         llm_config: LlmConfigProtocol,
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         corpus: Optional[str] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Optional[Qrels]:
         return None
@@ -64,6 +71,9 @@ class NaiveJudge(AutoJudge):
         nugget_banks: Optional[NuggetBanksProtocol] = None,
         qrels: Optional[Qrels] = None,
         corpus: Optional[str] = None,
+        # Standard output path settings (auto-filled by judge_runner)
+        filebase: str = "default",
+        outdir: Path = Path("."),
         **kwargs: Any,
     ) -> Leaderboard:
         builder: LeaderboardBuilder = LeaderboardBuilder(NAIVE_LEADERBOARD_SPEC)

@@ -105,7 +105,36 @@ def group_by_topic_id(rag_responses: Sequence[Report]) -> Dict[str, Dict[str, st
     return ret
 
 
-LEADERBOARD_SPEC = LeaderboardSpec(measures=list(MeasureSpec(i) for i in axioms.keys()))
+# Descriptions for axiom measures
+AXIOM_DESCRIPTIONS: dict[str, str] = {
+    "GEN-TFC1": "Term frequency coverage axiom",
+    "GEN-LNC1": "Length normalization constraint axiom",
+    "GEN-REG": "Regularity axiom",
+    "GEN-AND": "AND query satisfaction axiom",
+    "GEN-DIV": "Diversity axiom",
+    "GEN-STMC1": "Semantic term matching (type 1)",
+    "GEN-STMC2": "Semantic term matching (type 2)",
+    "GEN-PROX1": "Proximity axiom (type 1)",
+    "GEN-PROX2": "Proximity axiom (type 2)",
+    "GEN-PROX3": "Proximity axiom (type 3)",
+    "GEN-PROX4": "Proximity axiom (type 4)",
+    "GEN-PROX5": "Proximity axiom (type 5)",
+    "GEN-aSL": "Average sentence length axiom",
+    "GEN-TF-LNC": "Term frequency with length normalization",
+    "COH1-0.75": "Coherence axiom (type 1, margin 0.75)",
+    "COH2-0.75": "Coherence axiom (type 2, margin 0.75)",
+    "COV1-SE-0.5": "Coverage axiom (type 1, spacy entities)",
+    "COV2-SE-0.5": "Coverage axiom (type 2, spacy entities)",
+    "COV3-SE-0.5": "Coverage axiom (type 3, spacy entities)",
+    "CONS1-SE-0.5": "Consistency axiom (type 1, spacy entities)",
+    "CONS2-0.5": "Consistency axiom (type 2, margin 0.5)",
+    "CONS3-0.5": "Consistency axiom (type 3, margin 0.5)",
+}
+
+LEADERBOARD_SPEC = LeaderboardSpec(measures=tuple(
+    MeasureSpec(name, description=AXIOM_DESCRIPTIONS.get(name, f"IR axiom: {name}"))
+    for name in axioms.keys()
+))
 
 
 class IrAxiomJudge(AutoJudge):
