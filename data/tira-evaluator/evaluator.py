@@ -4,6 +4,8 @@ import click
 from glob import glob
 import json
 from tira.io_utils import to_prototext
+import yaml
+from pathlib import Path
 
 
 def find_leaderboard(input_dir):
@@ -14,6 +16,22 @@ def find_leaderboard(input_dir):
     if len(matches) == 1:
         return matches[0]
 
+
+def extract_llm(input_dir):
+    matches = glob(f"{input_dir}/*.config.yml")
+    ret = set()
+    for i in matches:
+        i = yaml.safe_load(Path(i).read_text())
+        if i and "llm_model" in i:
+            ret.add(i["llm_model"])
+
+    ret = list(ret)
+    if len(ret) == 1:
+        return ret[0]
+    elif len(ret) > 1:
+        return ret
+    else:
+        return None
 
 @click.command()
 @click.option("--truth-format", type=str, default="ir_measures")
@@ -44,6 +62,10 @@ def main(truth_format, eval_format, truth_leaderboard, input_directory, output_d
                 scores[s].append(l[s] if l[s] is not None else 0)
     
     ret = {"Eval-Measures": len(measures)}
+
+    if extract_llm(input_directory):
+        ret["Model"] = extract_llm(input_directory)
+
     for s in sorted(scores.keys()):
         ret[f"Max ({s})"] = max(scores[s])
         ret[f"Min ({s})"] = min(scores[s])
