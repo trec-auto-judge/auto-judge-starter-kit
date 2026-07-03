@@ -56,6 +56,8 @@ tira-cli code-submission \
 
 If everything worked, the output should look like this:
 
+<img width="1069" height="129" alt="Screenshot_20260703_160326" src="https://github.com/user-attachments/assets/8713334b-c27e-4fa9-8db4-b91521cd6a53" />
+
 
 remove the `--dry-run` flag to actually submit the auto judge to TIRA.
 
@@ -70,5 +72,4 @@ tira-cli run local --approach trec-auto-judge/webis/Naive-AutoJudge --input kidd
 The output would look like:
 
 
-
-```
+<img width="1030" height="393" alt="Screenshot_20260703_160041" src="https://github.com/user-attachments/assets/7e0d8348-d5d2-48b7-b986-33b0a2a91039" />
