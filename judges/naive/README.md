@@ -72,9 +72,9 @@ If the dry run succeeds, remove `--dry-run` to submit the AutoJudge system.
 
 For more details on the submission workflow and on how to prepare your software, please have a short look at the [TIRA participant documentation](https://docs.tira.io/participants/participate.html#prepare-your-submission). (The AutoJudge starter kit is already developed so that everything should be compatible with TIRA without much effort.)
 
-## Run the published Naive Judge
+## Run a published Naive Judge
 
-The example judge is already published on TIRA and can also be executed locally via `tira-cli`:
+This naive judge is already published on TIRA and can also be executed locally via `tira-cli`:
 
 ```bash
 tira-cli run local \
@@ -85,3 +85,5 @@ tira-cli run local \
 The output should look like:
 
 <img width="1030" height="393" alt="Screenshot_20260703_160041" src="https://github.com/user-attachments/assets/7e0d8348-d5d2-48b7-b986-33b0a2a91039" />
+
+(This is similar how we then run private submitted AutoJudges on the test datasets, potentially via different LLMs.)
