@@ -32,7 +32,7 @@ class Dataset:
 
 def load_datasets(config_path: Path) -> List[Dataset]:
     """Load datasets from YAML configuration file."""
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         config: Dict[str, Any] = yaml.safe_load(f) or {}
 
     datasets: List[Dataset] = []
