@@ -24,14 +24,14 @@ The **[TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.git
 | # | Activity | In Claude Code |
 |---|----------|----------------|
 | 1 | [Set up your dev environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) | `/autojudge-setup` |
-| 2 | [Configure your LLM endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md) | |
-| 3 | [Developing practices](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-developing-practices.md) | |
-| 4 | [Run workflows](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/04-run-workflows.md) | |
-| 5 | [Prompt cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) | |
-| 6 | [Meta-evaluation](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/06-meta-evaluation.md) | |
+| 2 | [Configure your LLM endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md) | `/autojudge-setup` |
+| 3 | [Develop an AutoJudge](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-develop-an-autojudge.md) | `/autojudge-develop` |
+| 4 | [Run workflows](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/04-run-workflows.md) | `/autojudge-develop` |
+| 5 | [Prompt cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) | `/autojudge-develop` |
+| 6 | [Meta-evaluation](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/06-meta-evaluation.md) | `/autojudge-develop` |
 | 7 | [Submit to TIRA](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) | `/autojudge-submit` |
 
-The two [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, shipped in this repo under `.claude/skills/`, walk you through setup and submission interactively — the HowTo pages cover the same ground for manual use.
+The three [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, shipped in this repo under `.claude/skills/`, walk you through every activity interactively — the HowTo pages cover the same ground for manual use.
 
 In short, getting started means: fork this repo, `uv venv && source .venv/bin/activate && uv pip install -e '.[all]'`, verify with `bash run_kiddie.sh`, and build your judge under `judges/` — with the details in the HowTo pages above.
 

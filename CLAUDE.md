@@ -7,12 +7,13 @@ This repository, the [auto-judge-starterkit](https://github.com/trec-auto-judge/
 
 ## Getting Started
 
-Two interactive skills in `.claude/skills/` walk the developer through the main activities; the HowTo pages cover the same ground for manual use:
+Three interactive skills in `.claude/skills/` cover every HowTo activity; the HowTo pages cover the same ground for manual use:
 
-| Activity | Skill | Canonical page |
-|----------|-------|----------------|
-| Set up a dev environment | `/autojudge-setup` | [setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) |
-| Submit to TIRA | `/autojudge-submit` | [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) |
+| Activity | Skill | Canonical pages |
+|----------|-------|-----------------|
+| Set up env + LLM endpoint | `/autojudge-setup` | [01-setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md), [02-configure-llm-endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md) |
+| Develop, run, cache, meta-evaluate | `/autojudge-develop` | [03](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-develop-an-autojudge.md)–[06](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/06-meta-evaluation.md) |
+| Submit to TIRA | `/autojudge-submit` | [07-submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) |
 
 ## Development Commands
 
@@ -40,7 +41,7 @@ auto-judge-evaluate meta-evaluate \
 
 ## Conventions
 
-Follow the conventions in [developing-practices](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-developing-practices.md) — most importantly: read the LLM endpoint from `llm_config` (never hardcode keys), sort responses by `run_id` before creating comparison pairs (deterministic prompts → stable cache keys), give every `MeasureSpec` a `description`, and accept the injected `filebase`/`outdir` parameters.
+Follow the conventions in [develop-an-autojudge](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-develop-an-autojudge.md) — most importantly: read the LLM endpoint from `llm_config` (never hardcode keys), sort responses by `run_id` before creating comparison pairs (deterministic prompts → stable cache keys), give every `MeasureSpec` a `description`, and accept the injected `filebase`/`outdir` parameters.
 
 ## Key References
 
