@@ -7,7 +7,7 @@ description: Submit a TREC AutoJudge to TIRA via a code submission. Use when the
 
 Walk the developer through this **interactively, one step at a time**, confirming before each step.
 
-The **canonical instructions live in the [TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** — this skill drives its [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/submit-to-tira.md) page (with [prompt-cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/prompt-cache.md) for the cache flags); defer to it for account setup, authentication, and any detail not repeated here, and do not contradict it. This repo's README holds the kit-specific reference. To set up a dev environment first, use `/autojudge-setup`.
+The **canonical instructions live in the [TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** — this skill drives its [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) page (with [prompt-cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) for the cache flags); defer to it for account setup, authentication, and any detail not repeated here, and do not contradict it. This repo's README holds the kit-specific reference. To set up a dev environment first, use `/autojudge-setup`.
 
 ## Step 1 — Pre-submission checklist
 - **Clean repository.** `git status --porcelain` must print nothing. Only *committed* state on the *currently checked-out branch* is submitted — commit or `.gitignore` anything that shows up.
@@ -35,7 +35,7 @@ tira-cli code-submission \
     --command 'auto-judge run --workflow /auto-judge/judges/<your-judge>/workflow.yml --variant <name> --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
 ```
 - `--variant <name>` and every other `auto-judge run` flag belong **inside** the quoted `--command` (there is no `tira-cli --variant` flag).
-- The cache flags apply to LLM judges that cache; judges without an LLM can omit them ([details](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/prompt-cache.md)).
+- The cache flags apply to LLM judges that cache; judges without an LLM can omit them ([details](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md)).
 
 ## Step 4 — Submit for real
 When the dry run passes, remove `--dry-run` and rerun the same command to upload. Repeat per judge/variant.

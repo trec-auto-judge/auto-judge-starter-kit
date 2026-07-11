@@ -11,8 +11,8 @@ Two interactive skills in `.claude/skills/` walk the developer through the main 
 
 | Activity | Skill | Canonical page |
 |----------|-------|----------------|
-| Set up a dev environment | `/autojudge-setup` | [setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/setup-environment.md) |
-| Submit to TIRA | `/autojudge-submit` | [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/submit-to-tira.md) |
+| Set up a dev environment | `/autojudge-setup` | [setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) |
+| Submit to TIRA | `/autojudge-submit` | [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) |
 
 ## Development Commands
 
@@ -40,7 +40,7 @@ auto-judge-evaluate meta-evaluate \
 
 ## Conventions
 
-Follow the conventions in [developing-practices](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/developing-practices.md) — most importantly: read the LLM endpoint from `llm_config` (never hardcode keys), sort responses by `run_id` before creating comparison pairs (deterministic prompts → stable cache keys), give every `MeasureSpec` a `description`, and accept the injected `filebase`/`outdir` parameters.
+Follow the conventions in [developing-practices](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-developing-practices.md) — most importantly: read the LLM endpoint from `llm_config` (never hardcode keys), sort responses by `run_id` before creating comparison pairs (deterministic prompts → stable cache keys), give every `MeasureSpec` a `description`, and accept the injected `filebase`/`outdir` parameters.
 
 ## Key References
 
