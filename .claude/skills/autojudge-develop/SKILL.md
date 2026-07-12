@@ -19,7 +19,7 @@ Follow [develop-an-autojudge](https://github.com/trec-auto-judge/.github/blob/ma
 - build the leaderboard through `LeaderboardSpec`/`LeaderboardBuilder`, every `MeasureSpec` with a `description`
 - nuggets via `NuggetBank`/`NuggetBanks`, qrels via `QrelsSpec`/`build_qrels`/`write_qrel_file`
 - hyperparameters as `workflow.yml` settings and `variants`, not constants in code
-Enforce the conventions: no hardcoded keys/endpoints (the task-provided `OPENAI_BASE_URL`/`OPENAI_MODEL`/`OPENAI_API_KEY` must be used as-is and routed into the LLM client — hardcoded values do not run on TIRA, and that failure surfaces only after submission; `tests/test_endpoint_contract.py` checks this, and non-LLM judges belong in its `NON_LLM_JUDGES` xfail set), sort by `run_id` before pairing, accept `filebase`/`outdir`, verify before returning.
+Enforce the conventions: no hardcoded keys/endpoints (the task-provided `OPENAI_BASE_URL`/`OPENAI_MODEL`/`OPENAI_API_KEY` must be used as-is and routed into the LLM client — hardcoded values do not run on TIRA, and that failure surfaces only after submission; `tests/test_endpoint_contract.py` checks this; judges without LLM calls declare `uses_llm: false` in their workflow.yml, which xfails their case), sort by `run_id` before pairing, accept `filebase`/`outdir`, verify before returning.
 
 ## Step 3 — Run on kiddie, iterate fast
 ```bash

@@ -39,16 +39,20 @@ def _tracked_workflows():
 
 WORKFLOWS = _tracked_workflows()
 
-# Judges that legitimately make no LLM calls: the endpoint-contact assertion is
-# expected to fail for them (xfail). strict=True keeps the list honest — when
-# such a judge starts calling an LLM, the unexpected pass fails the suite until
-# it is removed from this set. Forks: adjust for your own judges.
-NON_LLM_JUDGES = {"naive", "complete_example"}
+
+def _uses_llm(workflow: Path) -> bool:
+    """A judge declares `uses_llm: false` in its own workflow.yml when it makes
+    no LLM calls; the endpoint-contact assertion is then expected to fail
+    (xfail). strict=True keeps the declaration honest: when such a judge starts
+    calling an LLM, the unexpected pass fails the suite until the declaration
+    is removed. The workflow runner ignores the key."""
+    import yaml
+    return yaml.safe_load(workflow.read_text(encoding="utf-8")).get("uses_llm", True)
+
 
 PARAMS = [
-    pytest.param(w, marks=pytest.mark.xfail(
-        reason="non-LLM judge: no endpoint contact expected", strict=True))
-    if w.parent.name in NON_LLM_JUDGES else w
+    w if _uses_llm(w) else pytest.param(w, marks=pytest.mark.xfail(
+        reason="declares uses_llm: false — no endpoint contact expected", strict=True))
     for w in WORKFLOWS
 ]
 

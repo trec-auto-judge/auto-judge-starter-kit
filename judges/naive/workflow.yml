@@ -7,3 +7,6 @@ augment_report: false
 
 settings:
   filebase: "naive"
+
+# This judge makes no LLM calls (the endpoint-contract test xfails it)
+uses_llm: false

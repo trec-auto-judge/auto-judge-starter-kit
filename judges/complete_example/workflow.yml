@@ -116,3 +116,6 @@ sweeps:
       questions_per_topic: [2, 3, 5]
     judge_settings:
       keyword_bonus: [0.1, 0.2, 0.3]
+
+# This judge makes no LLM calls (the endpoint-contract test xfails it)
+uses_llm: false
