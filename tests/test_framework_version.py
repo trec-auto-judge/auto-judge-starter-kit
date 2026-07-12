@@ -70,7 +70,10 @@ def test_installed_meets_upstream_template_pin(package):
     """Installed package is the same or later than the upstream template requires."""
     upstream = _upstream_pyproject()
     if not upstream:
-        pytest.skip("no starterkit/upstream remote ref available (offline or template repo)")
+        pytest.skip(
+            "no starterkit/upstream remote ref — add one to enable this check: "
+            "git remote add starterkit git@github.com:trec-auto-judge/auto-judge-starter-kit.git"
+        )
     pin = _pin_from(upstream, package)
     installed = _installed(package)
     assert installed >= pin, (
