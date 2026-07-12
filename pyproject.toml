@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "langchain-starterkit"
+name = "auto-judge-starterkit"
 version = "0.3.18"
-description = "LangChain-based preference-nugget AutoJudge (imitates prefnugget best-decide-plum)"
+description = "Example AutoJudge implementations for building custom judges"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
@@ -30,8 +30,6 @@ dependencies = [
     "autojudge-base>=0.3.18",
     "tira>=0.0.100",
     "tqdm>=4.0",
-    "langchain-openai>=0.2",
-    "langchain-community>=0.3",
 ]
 
 [project.optional-dependencies]
@@ -46,7 +44,7 @@ evaluate = [
     "autojudge-evaluate>=0.3.18",
 ]
 all = [
-    "langchain-starterkit[minima-llm,evaluate,test]",
+    "auto-judge-starterkit[minima-llm,evaluate,test]",
 ]
 
 [project.urls]

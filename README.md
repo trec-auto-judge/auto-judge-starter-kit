@@ -1,49 +1,123 @@
-# LangChain Preference-Nugget AutoJudge
+# Auto-Judge Starterkit
 
-A [TREC AutoJudge](https://trec-auto-judge.cs.unh.edu/) built on [LangChain](https://python.langchain.com/), imitating the [prefnugget-starterkit](https://github.com/laura-dietz/prefnugget-starterkit) `best-decide-plum` variant — with an added twist: **decision points that create more preference pairs on demand** when nugget extraction stalls before its target.
+A forkable template repository with example Auto-Judge implementations for building custom judges.
 
-The canonical guide for setup, LLM configuration, running, caching, meta-evaluation, and submission is the [TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md); in [Claude Code](https://docs.anthropic.com/en/docs/claude-code), the `/autojudge-setup`, `/autojudge-develop`, and `/autojudge-submit` skills walk through the activities interactively.
+<p align="center">
+   <img width=120px src="https://trec-auto-judge.cs.unh.edu/media/trec-auto-judge-logo-small.png">
+   <br/>
+   <br/>
+   <a href="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml">
+   <img alt="Tests" src="https://github.com/trec-auto-judge/auto-judge-starterkit/actions/workflows/tests.yml/badge.svg"/>
+   </a>
+   <a href="tests">
+   <img alt="Coverage" src="tests/coverage.svg"/>
+   </a>
+   <br>
+   <a href="https://trec-auto-judge.cs.unh.edu/">Web</a> &nbsp;|&nbsp;
+   <a href="https://trec-auto-judge.cs.unh.edu/TREC_Auto_Judge.pdf">Proposal</a>
+</p>
 
-## How the judge works
+## Documentation
 
-| Phase | What happens |
-|-------|--------------|
-| 1 — Preference ranking | Pairwise `must_decide` preference judgments (both passage orders; inconsistent verdicts dropped) over a deterministic pool of comparisons; Borda scores rank the responses. |
-| 2 — Contrastive nugget extraction | Winner/loser pairs, strongest first (`borda(winner) + 0.99·borda(loser)`), are mined iteratively for *differentiating* questions — one pair per round, one question per pair ("plum"), deduplicated, until the bank holds `target_nuggets` (20). |
-| 3 — Grading | Every (response, nugget) pair is graded 0–5; a nugget counts as covered at grade ≥ 4. Measures: `NUGGET_COVERAGE`, `AVG_GRADE`, `MAX_GRADE`, `COVERED_COUNT`. |
+The **[TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** is the canonical guide, one page per activity:
 
-**The decision points (new over prefnugget):** Phase 1 starts with a deliberately small pool (`initial_num_others: 2` comparisons per response). Whenever Phase 2 runs out of unconsumed pairs — or the last remaining pair yields nothing new — while the bank sits below target, the judge *decides* to judge additional preference pairs (one more comparison offset per response), recomputes Borda, and continues extracting. It gives up only when the pool cannot grow further (all pairs judged) or the `max_pairs_considered` budget is spent.
+| # | Activity | In Claude Code |
+|---|----------|----------------|
+| 1 | [Set up your dev environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) | `/autojudge-setup` |
+| 2 | [Configure your LLM endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md) | `/autojudge-setup` |
+| 3 | [Develop an AutoJudge](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-develop-an-autojudge.md) | `/autojudge-develop` |
+| 4 | [Run workflows](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/04-run-workflows.md) | `/autojudge-develop` |
+| 5 | [Prompt cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) | `/autojudge-develop` |
+| 6 | [Meta-evaluation](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/06-meta-evaluation.md) | `/autojudge-develop` |
+| 7 | [Submit to TIRA](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) | `/autojudge-submit` |
 
-LLM access uses LangChain's `ChatOpenAI` against the endpoint injected via `llm_config` (never hardcoded), with lenient regex/JSON parsing so no provider-specific tool-calling is required. Prompt caching uses LangChain's `SQLiteCache` under `$CACHE_DIR`, per the [prompt-cache contract](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md).
+The three [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, shipped in this repo under `.claude/skills/`, walk you through every activity interactively — the HowTo pages cover the same ground for manual use.
 
-## Quick start
+In short, getting started means: fork this repo, `uv venv && source .venv/bin/activate && uv pip install -e '.[all]'`, verify with `bash run_kiddie.sh`, and build your judge under `judges/` — with the details in the HowTo pages above.
+
+## What is TREC AutoJudge?
+
+TREC Auto-Judge offers the first rigorous, cross-task benchmark for
+Large-Language-Model judges.
+
+Large-Language-Model judges have emerged as a pragmatic solution when
+manual relevance assessment is costly or infeasible. However, recent
+studies reveal wide variation in accuracy across tasks, prompts, and
+model sizes.
+
+Currently, shared task organizers choose an LLM judge per track ad
+hoc, risking inconsistent baselines and hidden biases.
+
+Auto-Judge provides a test bed for comparing different LLM judge ideas
+across several tasks and correlating results against manually created relevance
+judgments. AutoJudge provides a testbed to study emerging evaluation approaches,
+as well as vulnerabilities of LLM judges, and the efficacy of safeguards for
+those vulnerabilities.
+
+## What is this code for?
+
+This project provides a means to evaluate AutoJudge approaches and provide a system ranking / leaderboard.
+
+It will be used by TREC AutoJudge coordinators to score submissions. We encourage prospective participants to run this locally for method development.
+
+This code will handle obtaining data sets (akin to `ir_datasets`), input/output and format conversions, and evaluation measures.
+
+## Example Judges
+
+### CompleteExampleJudge (`judges/complete_example/`)
+
+A fully-documented example demonstrating all three protocols:
+- `ExampleNuggetCreator`: Creates nugget questions for topics
+- `ExampleQrelsCreator`: Creates relevance judgments
+- `ExampleLeaderboardJudge`: Scores responses and produces leaderboard
+
+No LLM calls - all logic is deterministic. Use this as a reference for building judges that use nuggets and qrels.
+
+### NaiveJudge (`judges/naive/`)
+
+A simple baseline judge that scores based on:
+- Response text length
+- Deterministic random score (for baseline comparison)
+
+### TinyJudge (`judges/tinyjudge/`)
+
+A minimal LLM-based judge with prompt caching — the smallest realistic template for an LLM judge.
+
+## Test Dataset: kiddie (`data/kiddie/`)
+
+A small **synthetic dataset** for development and testing:
+- 5 topics with simple queries
+- 4 runs of varying quality
+- Useful for validating workflow configurations and quick iteration
 
 ```bash
-uv venv && source .venv/bin/activate
-uv pip install -e '.[all]'
-
-export OPENAI_BASE_URL=... OPENAI_MODEL=... OPENAI_API_KEY=...
-export CACHE_DIR=./cache
-
+# Run your judge against kiddie
 auto-judge run \
-    --workflow judges/langchain_pref/workflow.yml \
-    --variant best-decide-plum \
+    --workflow judges/naive/workflow.yml \
     --rag-responses data/kiddie/runs/repgen/ \
     --rag-topics data/kiddie/topics/kiddie-topics.jsonl \
     --out-dir ./output-kiddie/
 ```
 
-Variants: `best-decide-plum` (default parameters) and `smoke` (small targets for fast iteration). Handy overrides: `-N initial_num_others=1` (exercise the growth decision points), `-N target_nuggets=10`, `-J grade_threshold=3`.
+Or run the included smoke test script which also does meta-evaluation: `bash run_kiddie.sh`
 
-On the tiny kiddie dataset (4 runs → at most 6 pairs), the 20-nugget target is intentionally unreachable — the judge extracts what the pool supports and stops gracefully; expect ~5–6 nuggets per topic.
-
-## Layout
+## Project Structure
 
 ```
-judges/langchain_pref/
-  langchain_judge.py   # prompts, parsers, PrefPool, decision loop, judge class
-  workflow.yml         # phases, settings, variants
-tests/test_langchain_pref.py  # parser + pool unit tests (no LLM)
+auto-judge-starterkit/
+├── pyproject.toml           # Dependencies and package config
+├── README.md                # This file
+├── run_kiddie.sh            # End-to-end smoke test on kiddie
+├── run_all_datasets.py      # Batch driver: one run per dataset in datasets.yml
+├── judges/
+│   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)
+│   ├── naive/               # Simple baseline judge
+│   ├── tinyjudge/           # Minimal LLM judge example
+├── data/
+│   └── kiddie/              # Synthetic test dataset
+├── .claude/skills/          # /autojudge-setup and /autojudge-submit walkthroughs
+└── tests/
+    └── test_examples.py     # Smoke tests
 ```
 
 ## License
