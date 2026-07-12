@@ -172,16 +172,49 @@ def build_llm(llm_config: LlmConfigProtocol):
     )
 
 
-def run_chain_batched(chain, inputs: List[dict], max_concurrency: int) -> List[str]:
-    """Run a LangChain chain over inputs; failed items yield empty strings."""
+class LlmEndpointError(RuntimeError):
+    """The LLM endpoint is unusable (bad key, dead endpoint, stale model id)."""
+
+
+ENDPOINT_HINT = (
+    "check OPENAI_BASE_URL / OPENAI_MODEL / OPENAI_API_KEY (see the HowTo: "
+    "https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md#troubleshooting)"
+)
+
+
+def preflight(llm) -> None:
+    """Fail fast with the provider's actual error instead of N failed calls."""
+    try:
+        llm.invoke("Answer with the single word: pong")
+    except Exception as e:
+        raise LlmEndpointError(f"LLM endpoint preflight failed: {e} — {ENDPOINT_HINT}") from e
+
+
+def run_chain_batched(chain, inputs: List[dict], max_concurrency: int, phase: str = "") -> List[str]:
+    """Run a LangChain chain over inputs; failed items yield empty strings.
+
+    Individual failures are tolerated (logged, counted); when EVERY call fails
+    the endpoint itself is broken and we raise instead of degrading silently.
+    """
+    if not inputs:
+        return []
     results = chain.batch(inputs, config={"max_concurrency": max_concurrency}, return_exceptions=True)
-    out = []
+    out, failures, first_error = [], 0, None
     for r in results:
         if isinstance(r, Exception):
-            print(f"[langchain_pref] LLM call failed: {r}", file=sys.stderr)
+            failures += 1
+            first_error = first_error or r
             out.append("")
         else:
             out.append(r)
+    if failures == len(inputs):
+        raise LlmEndpointError(
+            f"All {failures} LLM calls failed in {phase or 'batch'} "
+            f"(first error: {first_error}) — {ENDPOINT_HINT}"
+        )
+    if failures:
+        print(f"[langchain_pref] {phase}: {failures}/{len(inputs)} LLM calls failed "
+              f"(first error: {first_error}); continuing with partial results", file=sys.stderr)
     return out
 
 
@@ -246,7 +279,7 @@ def judge_preference_pairs(
                 "passage_2": texts[p2],
             })
             order.append((p1, p2))
-    answers = run_chain_batched(chain, inputs, max_concurrency)
+    answers = run_chain_batched(chain, inputs, max_concurrency, phase="preference judging")
 
     winners_by_pair: Dict[Tuple[str, str], List[str]] = {}
     for (p1, p2), ans in zip(order, answers):
@@ -330,7 +363,7 @@ def extract_nuggets_for_topic(
             "winner_passage": texts[winner],
             "loser_passage": texts[loser],
             "given_exam_questions": json.dumps(questions),
-        }], concurrency)[0]
+        }], concurrency, phase="nugget extraction")[0]
 
         added = 0
         for q in parse_questions(answer)[:per_pair]:
@@ -394,6 +427,7 @@ class LangChainPrefJudge(AutoJudge):
     ) -> Optional[NuggetBanks]:
         settings = self._settings(kwargs)
         llm = build_llm(llm_config)
+        preflight(llm)
 
         by_topic: Dict[str, List[Report]] = {}
         for r in rag_responses:
@@ -430,6 +464,11 @@ class LangChainPrefJudge(AutoJudge):
             ])
             banks.append(bank)
 
+        if banks and all(len(b.nuggets_as_list()) == 0 for b in banks):
+            raise LlmEndpointError(
+                f"Nugget extraction produced 0 questions for all {len(banks)} topics; "
+                f"LLM calls are likely failing — {ENDPOINT_HINT}"
+            )
         return NuggetBanks.from_banks_list(banks)
 
     # ---- Phase 3 ---------------------------------------------------------
@@ -448,6 +487,7 @@ class LangChainPrefJudge(AutoJudge):
         if nugget_banks is None:
             raise ValueError("LangChainPrefJudge.judge() requires nugget_banks (judge_uses_nuggets: true)")
         llm = build_llm(llm_config)
+        preflight(llm)
         chain = GRADE_PROMPT | llm | StrOutputParser()
 
         responses = sorted(rag_responses, key=lambda r: (r.metadata.topic_id, r.metadata.run_id))
@@ -461,7 +501,7 @@ class LangChainPrefJudge(AutoJudge):
                 inputs.append({"question": nugget.question, "passage": passage})
                 index.append((r.metadata.run_id, r.metadata.topic_id))
 
-        answers = run_chain_batched(chain, inputs, settings["max_concurrency"])
+        answers = run_chain_batched(chain, inputs, settings["max_concurrency"], phase="grading")
 
         grades: Dict[Tuple[str, str], List[int]] = {}
         for (run_id, topic_id), ans in zip(index, answers):
