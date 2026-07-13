@@ -21,7 +21,7 @@ It enables pulling template improvements (`git fetch starterkit && git merge sta
 uv venv
 source .venv/bin/activate
 ```
-Common pitfall: `uv venv` creates the venv but does **not** activate it — if activation is skipped, the next `uv pip install` may land in the wrong environment.
+Common pitfall: `uv venv` creates the venv but does **not** activate it — if activation is skipped, the next `uv pip install` may land in the wrong environment. The same cause shows up later at run time as `No module named 'judges…'` or `Failed to load judge classes`: the venv isn't active in the current shell — re-run `source .venv/bin/activate`. If the developer reports either error, check this first.
 
 ## Step 2 — Install the toolchain
 ```bash
