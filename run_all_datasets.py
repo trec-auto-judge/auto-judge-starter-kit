@@ -54,6 +54,16 @@ def load_datasets(config_path: Path) -> List[Dataset]:
     return datasets
 
 
+def run_dir(out_dir: Path, workflow: Path, dataset_name: str, variant: str | None,
+            runs_filter: str, topics_filter: str) -> Path:
+    """Output directory for one result set, nested <dataset>/<workflow>/<variant> so different
+    datasets, judges, and variants never share a directory — each holds a single leaderboard,
+    which is what `tira-cli upload` and meta-evaluate expect. Computed in one place so the run,
+    dry-run, and summary paths cannot drift apart."""
+    leaf = f"{variant or 'default'}-{runs_filter}-{topics_filter}"
+    return out_dir / dataset_name / workflow.parent.name / leaf
+
+
 def run_meta_evaluate(dataset: Dataset, dataset_out: Path) -> None:
     """Invoke auto-judge-evaluate meta-evaluate against the dataset's truth file, if available."""
     if not dataset.truth:
@@ -133,9 +143,8 @@ def run_workflow(
     metaeval_dest: str | None = None,
 ) -> bool:
     """Run the workflow against a single dataset. Returns True on success."""
-    # Include runs/topics (and variant, if set) in output path to separate results
-    suffix: str = f"-{variant}" if variant else "-default"
-    dataset_out: Path = out_dir / f"{dataset.name}{suffix}-{runs_filter}-{topics_filter}"
+    # Separate results by dataset/workflow/variant so different judges never share a dir
+    dataset_out: Path = run_dir(out_dir, workflow, dataset.name, variant, runs_filter, topics_filter)
     dataset_out.mkdir(parents=True, exist_ok=True)
 
     cmd: List[str] = [
@@ -148,11 +157,9 @@ def run_workflow(
     if variant:
         cmd.extend(["--variant", variant])
 
-    # Add corpus (optional but recommended)
+    # Add corpus (optional; only doc-consulting judges need it)
     if dataset.corpus:
         cmd.extend(["--corpus", dataset.corpus])
-    else:
-        print(f"Note: no 'corpus' configured for {dataset.name} in datasets.yml (recommended for nugget/qrels/judge that consult source documents)")
 
     # Add run filtering
     if runs_filter == "prio1" and dataset.prio1_runs:
@@ -299,21 +306,18 @@ def main() -> None:
         print(f"  - {d.name}{info_str}")
 
     if args.dry_run:
-        suffix: str = f"-{args.variant}" if args.variant else "-default"
         for dataset in datasets:
             print(f"\nWould run: {dataset.name}")
             cmd_parts: List[str] = [
                 f"auto-judge run --workflow {workflow}",
                 f"--rag-responses {dataset.responses}",
                 f"--rag-topics {dataset.topics}",
-                f"--out-dir {out_dir / f'{dataset.name}{suffix}-{args.runs}-{args.topics}'}",
+                f"--out-dir {run_dir(out_dir, workflow, dataset.name, args.variant, args.runs, args.topics)}",
             ]
             if args.variant:
                 cmd_parts.append(f"--variant {args.variant}")
             if dataset.corpus:
                 cmd_parts.append(f"--corpus {dataset.corpus}")
-            else:
-                print(f"  Note: no 'corpus' configured for {dataset.name}")
             if args.runs == "prio1" and dataset.prio1_runs:
                 cmd_parts.append(f"--run {' --run '.join(dataset.prio1_runs)}")
             if args.topics == "assessed" and dataset.assessed_topics:
@@ -322,7 +326,7 @@ def main() -> None:
                 cmd_parts.append(" ".join(extra))
             print("  " + " \\\n    ".join(cmd_parts))
             system_name: str = f"{workflow.parent.name}-{args.variant or 'default'}"
-            ddir: Path = out_dir / f"{dataset.name}{suffix}-{args.runs}-{args.topics}"
+            ddir: Path = run_dir(out_dir, workflow, dataset.name, args.variant, args.runs, args.topics)
             if args.upload_tira:
                 if dataset.tira_id:
                     print(f"  # then: tira-cli upload --dataset {dataset.tira_id} --directory {ddir} --system {system_name}")
@@ -337,9 +341,8 @@ def main() -> None:
 
     # Run each dataset
     results: Dict[str, str] = {}
-    key_suffix: str = f"-{args.variant}" if args.variant else "-default"
     for dataset in datasets:
-        key: str = f"{dataset.name}{key_suffix}-{args.runs}-{args.topics}"
+        key: str = str(run_dir(out_dir, workflow, dataset.name, args.variant, args.runs, args.topics).relative_to(out_dir))
         success: bool = run_workflow(workflow, dataset, out_dir, args.runs, args.topics, extra, variant=args.variant, meta_evaluate=args.meta_evaluate, upload_tira=args.upload_tira, upload_metaeval=args.upload_metaeval, metaeval_dest=args.metaeval_dest)
         results[key] = "OK" if success else "FAILED"
 
