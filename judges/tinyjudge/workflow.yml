@@ -10,3 +10,11 @@ judge: true
 
 settings:
   filebase: "tinyjudge"
+  segments: 1            # how many leading response segments to send to the LLM
+
+# Named configurations that override settings:
+#   auto-judge run --workflow workflow.yml --variant <name>
+variants:
+  # Judge the first three segments instead of just the first, for more context
+  context:
+    segments: 3

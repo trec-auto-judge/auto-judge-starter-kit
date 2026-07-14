@@ -47,9 +47,14 @@ class TinyJudge:
         # Standard output path settings (auto-filled by judge_runner)
         filebase: str = "default",
         outdir: Path = Path("."),
+        segments: int = 1,
         **kwargs: Any,
     ) -> Leaderboard:
-        """Judge first-sentence relevance using LLM (batched for efficiency)."""
+        """Judge first-response-segment relevance using LLM (batched for efficiency).
+
+        `segments` (from workflow settings) controls how many leading response
+        segments are sent to the LLM; the default of 1 judges only the first.
+        """
         topic_titles: Dict[str, str] = {t.request_id: t.title or "" for t in rag_topics}
         expected_topic_ids: List[str] = list(topic_titles.keys())
 
@@ -57,7 +62,7 @@ class TinyJudge:
         requests_info: List[Tuple[str, str, MinimaLlmRequest]] = []  # (run_id, topic_id, request)
         for i, response in enumerate(rag_responses):
             query = topic_titles.get(response.metadata.topic_id, "")
-            first_sentence = response.responses[0].text if response.responses else ""
+            judged_text = " ".join(r.text for r in response.responses[:segments] if r.text)
             requests_info.append((
                 response.metadata.run_id,
                 response.metadata.topic_id,
@@ -65,7 +70,7 @@ class TinyJudge:
                     request_id=f"q{i}",
                     messages=[
                         {"role": "system", "content": "You are a relevance evaluator. Respond with only 1 or 0."},
-                        {"role": "user", "content": f"Is this relevant to the query?\n\nQuery: {query}\nSentence: {first_sentence}"},
+                        {"role": "user", "content": f"Is this relevant to the query?\n\nQuery: {query}\nText: {judged_text}"},
                     ],
                     temperature=0.0,
                 ),
