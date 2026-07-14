@@ -33,24 +33,71 @@ class Dataset:
     bucket: str | None = None   # Optional: meta-evaluation service track bucket (dragun/ragtime/rag-generation/rag-auggen)
 
 
+LOCAL_DATA = Path("./local-data")   # where fetch_pilot_dataset.sh extracts each track
+
+
+def _resolve_from_release(rel: Dict[str, str], name: str):
+    """Pull responses/topics/prio1_runs/assessed_topics from a fetched tarball's own datasets.yml
+    (./local-data/<track>/datasets.yml), rooting its relative paths at the extract dir. Returns a
+    (responses, topics, prio1_runs, assessed_topics) tuple, or None if the track isn't fetched
+    (or the task is absent)."""
+    track, task = rel.get("track"), rel.get("task")
+    bundled: Path = LOCAL_DATA / str(track) / "datasets.yml"
+    if not bundled.exists():
+        return None  # not fetched — summarized by the caller
+    cfg: Dict[str, Any] = yaml.safe_load(bundled.read_text(encoding="utf-8")) or {}
+    base: Path = LOCAL_DATA / str(track)
+
+    def rooted(p: Any) -> str:
+        s = str(p)
+        if s.startswith("/"):
+            return s  # already absolute (a fixed release should not emit these)
+        return str(base / (s[2:] if s.startswith("./") else s))
+
+    for ds in cfg.get("datasets", []):
+        if ds.get("name") == task:
+            return (rooted(ds["responses"]), rooted(ds["topics"]),
+                    ds.get("prio1_runs", []) or [], ds.get("assessed_topics", []) or [])
+    print(f"Warning: {name}: task '{task}' not found in {bundled}", file=sys.stderr)
+    return None
+
+
 def load_datasets(config_path: Path) -> List[Dataset]:
-    """Load datasets from YAML configuration file."""
+    """Load datasets from YAML. Entries with `from_release: {track, task}` pull their
+    responses/topics/prio1_runs/assessed_topics from the fetched tarball's own datasets.yml,
+    so data paths live in the release, not here (only tira_id/bucket/name are maintained here)."""
     with open(config_path, encoding="utf-8") as f:
         config: Dict[str, Any] = yaml.safe_load(f) or {}
 
     datasets: List[Dataset] = []
+    unfetched: List[str] = []
     for entry in config.get("datasets", []):
+        rel = entry.get("from_release")
+        if rel:
+            resolved = _resolve_from_release(rel, entry["name"])
+            if resolved is None:
+                unfetched.append(entry["name"])
+                continue
+            responses, topics, prio1_runs, assessed_topics = resolved
+        else:
+            responses = entry["responses"]
+            topics = entry["topics"]
+            prio1_runs = entry.get("prio1_runs", []) or []
+            assessed_topics = entry.get("assessed_topics", []) or []
         datasets.append(Dataset(
             name=entry["name"],
-            responses=entry["responses"],
-            topics=entry["topics"],
-            prio1_runs=entry.get("prio1_runs", []) or [],
-            assessed_topics=entry.get("assessed_topics", []) or [],
+            responses=responses,
+            topics=topics,
+            prio1_runs=prio1_runs,
+            assessed_topics=assessed_topics,
             truth=entry.get("truth"),
             corpus=entry.get("corpus"),
             tira_id=entry.get("tira_id"),
             bucket=entry.get("bucket"),
         ))
+    if unfetched:
+        print(f"Note: not fetched yet (run ./fetch_pilot_dataset.sh --dataset <name>): {', '.join(unfetched)}",
+              file=sys.stderr)
     return datasets
 
 
