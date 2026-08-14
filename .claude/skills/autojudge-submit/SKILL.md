@@ -9,6 +9,9 @@ Walk the developer through this **interactively, one step at a time**, confirmin
 
 The **canonical instructions live in the [TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** — this skill drives its [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) page (with [prompt-cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) for the cache flags); defer to it for account setup, authentication, and any detail not repeated here, and do not contradict it. To set up a dev environment first, use `/autojudge-setup`.
 
+## Step 0 — Read the canonical page IN FULL before running anything
+Read [submit-to-tira](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md) end to end **now** (and [prompt-cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) if the judge caches LLM calls). Do not skim, do not grep, and do not consult framework source code for anything the page answers. If a local checkout of the howto exists (e.g. a `profile/howto/` directory), read the local files. Only after the page is read, continue with Step 1.
+
 ## Step 1 — LLM environment and local verification
 Check whether `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` are set (`env | grep OPENAI`, never print the key's value) — if not, remind the developer to load them, plus `CACHE_DIR` for caching judges, before anything else. Then verify the judge end to end locally:
 ```bash
