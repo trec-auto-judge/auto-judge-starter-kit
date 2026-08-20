@@ -1,0 +1,21 @@
+# TinyJudgeEnsemble workflow configuration
+# Minimal LLM-ensemble judge that checks first-sentence relevance with three
+# independently configured LLMs (LLM1, LLM2, LLM3) and reports their average.
+
+judge_class: "judges.tinyjudge-ensemble.tiny_judge_ensemble:TinyJudgeEnsemble"
+
+# Lifecycle flags
+create_nuggets: false
+create_qrels: false
+judge: true
+
+settings:
+  filebase: "tinyjudge-ensemble"
+  segments: 1            # how many leading response segments to send to each LLM
+
+# Named configurations that override settings:
+#   auto-judge run --workflow workflow.yml --variant <name>
+variants:
+  # Judge the first three segments instead of just the first, for more context
+  context:
+    segments: 3
