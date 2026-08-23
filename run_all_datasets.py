@@ -40,7 +40,8 @@ def _resolve_from_release(rel: Dict[str, str], name: str):
     """Pull responses/topics/prio1_runs/assessed_topics from a fetched tarball's own datasets.yml
     (./local-data/<track>/datasets.yml), rooting its relative paths at the extract dir. Returns a
     (responses, topics, prio1_runs, assessed_topics) tuple, or None if the track isn't fetched
-    (or the task is absent)."""
+    (or the task is absent). `truth` comes along when the release ships one, so a
+    placeholder eval/ can be exercised without hand-copying its path."""
     track, task = rel.get("track"), rel.get("task")
     bundled: Path = LOCAL_DATA / str(track) / "datasets.yml"
     if not bundled.exists():
@@ -56,8 +57,10 @@ def _resolve_from_release(rel: Dict[str, str], name: str):
 
     for ds in cfg.get("datasets", []):
         if ds.get("name") == task:
+            released_truth = ds.get("truth")
             return (rooted(ds["responses"]), rooted(ds["topics"]),
-                    ds.get("prio1_runs", []) or [], ds.get("assessed_topics", []) or [])
+                    ds.get("prio1_runs", []) or [], ds.get("assessed_topics", []) or [],
+                    rooted(released_truth) if released_truth else None)
     print(f"Warning: {name}: task '{task}' not found in {bundled}", file=sys.stderr)
     return None
 
@@ -78,19 +81,20 @@ def load_datasets(config_path: Path) -> List[Dataset]:
             if resolved is None:
                 unfetched.append(entry["name"])
                 continue
-            responses, topics, prio1_runs, assessed_topics = resolved
+            responses, topics, prio1_runs, assessed_topics, released_truth = resolved
         else:
             responses = entry["responses"]
             topics = entry["topics"]
             prio1_runs = entry.get("prio1_runs", []) or []
             assessed_topics = entry.get("assessed_topics", []) or []
+            released_truth = None
         datasets.append(Dataset(
             name=entry["name"],
             responses=responses,
             topics=topics,
             prio1_runs=prio1_runs,
             assessed_topics=assessed_topics,
-            truth=entry.get("truth"),
+            truth=entry.get("truth") or released_truth,
             corpus=entry.get("corpus"),
             tira_id=entry.get("tira_id"),
             bucket=entry.get("bucket"),
@@ -125,16 +129,38 @@ def run_meta_evaluate(dataset: Dataset, dataset_out: Path) -> None:
         print(f"Skipping meta-evaluation for {dataset.name}: no *.eval.txt in {dataset_out}")
         return
 
-    cmd: List[str] = [
-        "auto-judge-evaluate", "meta-evaluate",
-        "--truth-leaderboard", dataset.truth,
-        "--truth-format", "ir_measures", "--truth-header",
-        "--eval-format", "ir_measures",
-        "--on-missing", "default",
-        *[str(p) for p in eval_files],
-    ]
+    def meta_eval_cmd(truth_fmt: str) -> List[str]:
+        cmd: List[str] = [
+            "auto-judge-evaluate", "meta-evaluate",
+            "--truth-leaderboard", str(dataset.truth),
+            "--truth-format", truth_fmt,
+        ]
+        if truth_fmt == "ir_measures":
+            # JSONL has no header row; the tabular truth we ship (kiddie) does.
+            cmd.append("--truth-header")
+        cmd += [
+            "--eval-format", "ir_measures",
+            "--on-missing", "default",
+            *[str(p) for p in eval_files],
+        ]
+        return cmd
+
+    # Truth ships in two formats: the track releases use JSONL, kiddie is
+    # tabular ir_measures. The extension says which, but treat it as a hint --
+    # try that one first, fall back to the other, so a misnamed file still works.
+    formats: List[str] = (["jsonl", "ir_measures"]
+                          if str(dataset.truth).endswith(".jsonl")
+                          else ["ir_measures", "jsonl"])
     print(f"\n=== Meta-evaluation: {dataset.name} (truth={dataset.truth}) ===")
-    subprocess.run(cmd)
+    for attempt, truth_fmt in enumerate(formats):
+        result: subprocess.CompletedProcess[bytes] = subprocess.run(meta_eval_cmd(truth_fmt))
+        if result.returncode == 0:
+            return
+        if attempt == 0:
+            print(f"Meta-evaluation could not read {dataset.truth} as {truth_fmt}; "
+                  f"retrying as {formats[1]}.", file=sys.stderr)
+    print(f"Meta-evaluation failed for {dataset.name}: could not read {dataset.truth} "
+          f"as {' or '.join(formats)}.", file=sys.stderr)
 
 
 def run_tira_upload(dataset: Dataset, dataset_out: Path, system: str) -> None:
@@ -314,11 +340,20 @@ def main() -> None:
     for d in all_datasets:
         # Skip if prio1 requested but no prio1_runs defined
         if args.runs == "prio1" and not d.prio1_runs:
-            print(f"Skipping {d.name}: no prio1_runs defined", file=sys.stderr)
+            print(f"Warning: {d.name}: --runs prio1 requested, but 'prio1_runs' is "
+                  f"empty in {datasets_path} -- skipping this dataset. "
+                  f"Re-run without --runs prio1 to use all runs.", file=sys.stderr)
             continue
-        # Skip if assessed requested but no assessed_topics defined
+        # Skip if assessed requested but no assessed_topics defined. A release
+        # published before its manual assessments ships assessed_topics: [] --
+        # the dataset is fine, there is simply nothing to filter to yet, so say
+        # that rather than let it look like a broken config.
         if args.topics == "assessed" and not d.assessed_topics:
-            print(f"Skipping {d.name}: no assessed_topics defined", file=sys.stderr)
+            print(f"Warning: {d.name}: --topics assessed requested, but "
+                  f"'assessed_topics' is empty in {datasets_path} -- skipping this "
+                  f"dataset. Releases without manual assessments ship an empty "
+                  f"list; re-run without --topics assessed to use all topics.",
+                  file=sys.stderr)
             continue
         datasets.append(d)
 
