@@ -5,6 +5,7 @@ test-coverage
 *.egg-info/
 .venv/
 cache/
+*cache/
 example-cache-kiddie/
 out*/
 output/
