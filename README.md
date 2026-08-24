@@ -17,6 +17,35 @@ A forkable template repository with example Auto-Judge implementations for build
    <a href="https://trec-auto-judge.cs.unh.edu/TREC_Auto_Judge.pdf">Proposal</a>
 </p>
 
+## Working with restricted evaluation data
+
+Evaluation datasets are anonymised, and only the first 10 topics of a dataset's
+topics file are open to inspection by you or your coding agent. The judge itself
+is unrestricted — it reads every run and topic, and that is the task. See the
+data-handling policy shipped with the dataset.
+
+When a judge crashes on a restricted record, do not open the record. Use `scrub`
+(from `autojudge-base`) to turn it into something safe to look at:
+
+```bash
+scrub --topic 37 --run plum runs/repgen/plum      # tier 1: structure only
+scrub --chars --topic 37 runs/repgen/plum         # tier 2: + lengths, punctuation
+```
+
+Tier 1 keeps keys, types, nesting and list lengths and replaces every string with
+`wiffle waffle` — enough for missing fields, wrong types and bad nesting, and safe
+to commit as a fixture. Tier 2 additionally preserves string lengths and every
+non-alphanumeric character, so encoding, parsing and length bugs reproduce; it
+leaks a run's formatting template, so do not commit it or compare it across runs.
+If neither reproduces the bug, hand the exception, stack trace and record id to
+your developer — the bug is content-dependent, which is exactly the case where
+you do not look.
+
+`scrub` is the only sanctioned path from a restricted record to your view. Do not
+write your own, and do not apply it partially. Every invocation is appended to
+`scrub-log.jsonl` (counts, not values).
+
+
 ## Documentation
 
 The **[TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** is the canonical guide, one page per activity:
