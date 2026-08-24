@@ -13,7 +13,7 @@ The **canonical instructions live in the [TREC AutoJudge Participant HowTo](http
 Read [develop-an-autojudge](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/03-develop-an-autojudge.md) and [run-workflows](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/04-run-workflows.md) end to end **now** (and [prompt-cache](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/05-prompt-cache.md) / [meta-evaluation](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/06-meta-evaluation.md) before Steps 4-5). Do not skim, do not grep, and do not consult framework source code for anything these pages answer. If a local checkout of the howto exists (e.g. a `profile/howto/` directory), read the local files. Only after both pages are read, continue with Step 1.
 
 **Essentials** (the facts every session needs immediately; if context was lost mid-walkthrough, recover from here):
-- There is ONE run command: `auto-judge run` (plus `export-corpus`). There is no `judge`/`nuggify` subcommand.
+- There is ONE run command: `auto-judge run`. There is no `judge`/`nuggify` subcommand.
 - `auto-judge run --help` lists every flag; the everyday ones: `--limit-topics/--topic`, `--run/--limit-runs`, `--variant`, `-S/-N/-J KEY=VALUE` overrides, `--nugget-banks FILE-OR-DIR`, `--out-dir`, `--filebase`.
 - A judge may implement ONLY `judge()` (`LeaderboardJudgeProtocol`) and consume prebuilt banks via `--nugget-banks` — then the class MUST declare `nugget_banks_type = NuggetBanks` or the runner cannot load them.
 - Judge classes are `module:Class` dotted paths — any importable package works (`judges.myjudge...` in the kit, or an installed package path).
