@@ -75,7 +75,7 @@ Follow the conventions in [develop-an-autojudge](https://github.com/trec-auto-ju
 
 ### Stuck on a restricted topic?
 
-Reproduce the bug on an unrestricted dataset or a permitted topic. Failing that, run `scrub` on the failing record; failing that, `scrub --chars` (which needs a `--topic`, `--run` or `--index` selector). Failing that, hand the exception, stack trace and record id to the user. Never compare or commit `scrub --chars` output. `scrub` is the only transform — do not write your own, and do not print a value yourself to see what broke. **Reproduce, then inspect — never inspect in order to reproduce.**
+Reproduce the bug on an unrestricted dataset or a permitted topic. Failing that, run `scrub` on the failing record; failing that, `scrub --chars` (which needs a `--topic`, `--run` or `--index` selector). Failing that, hand the exception, stack trace and record id to the user. Never compare `scrub --chars` output across runs, but do keep it as a test fixture. `scrub` is the only transform — do not write your own, and do not print a value yourself to see what broke. **Reproduce, then inspect — never inspect in order to reproduce.**
 
 ### Why
 
