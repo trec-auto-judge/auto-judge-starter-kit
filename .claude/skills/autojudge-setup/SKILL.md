@@ -9,6 +9,8 @@ Walk the developer through this **interactively, one step at a time**. After eac
 
 The **canonical instructions live in the [TREC AutoJudge Participant HowTo](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/README.md)** — this skill drives its pages [setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) and [configure-llm-endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md); defer to them and do not contradict them. This repo's README holds the kit-specific reference (example judges, kiddie dataset, project structure). Building and running the judge belongs to `/autojudge-develop`; submitting belongs to `/autojudge-submit`.
 
+**Before any command that touches evaluation data, read the [data-handling policy](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/data-policy.md) IN FULL.** It governs what you, the coding agent, may look at — the judge itself is unrestricted — and gives the sanctioned way to debug a failure on a record you may not inspect.
+
 ## Step 0 — Read the canonical pages IN FULL before running anything
 Read [setup-environment](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md) and [configure-llm-endpoint](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/02-configure-llm-endpoint.md) end to end **now**. Do not skim, do not grep, and do not consult framework source code for anything these pages answer. If a local checkout of the howto exists (e.g. a `profile/howto/` directory), read the local files. Only after both pages are read, continue with Step 1.
 
