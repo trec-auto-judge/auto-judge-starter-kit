@@ -42,5 +42,19 @@ datasets:
     tira_id: ragtime25-20260608-test
     bucket: ragtime
 
+  # TREC 2026 AutoJudge TEST data. The runs are anonymized and the archives ship a
+  # data-handling policy (AGENTS.md / CLAUDE.md) that binds coding agents; the judge
+  # itself may read everything. See
+  # https://github.com/trec-auto-judge/.github/blob/main/profile/howto/data-policy.md
+  - name: rag26-generation
+    from_release: {track: rag26, task: generation}
+    tira_id: rag26-20260826-test
+    bucket: rag26
+
+  - name: ragtime26-repgen
+    from_release: {track: ragtime26, task: repgen}
+    tira_id: ragtime26-20260826-test
+    bucket: ragtime26
+
   # rag24 — TIRA code-submission ONLY (tira_id: rag24-20260604-test). Not available for local
   # processing; submit code via `tira-cli code-submission ... --dataset rag24-20260604-test`.
