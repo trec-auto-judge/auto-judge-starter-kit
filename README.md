@@ -22,7 +22,8 @@ A forkable template repository with example Auto-Judge implementations for build
 Evaluation datasets are anonymised, and only the first 10 topics of a dataset's
 topics file are open to inspection by you or your coding agent. The judge itself
 is unrestricted — it reads every run and topic, and that is the task. See the
-data-handling policy shipped with the dataset.
+[data-handling policy](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/data-policy.md)
+(also shipped with the dataset).
 
 When a judge crashes on a restricted record, do not open the record. Use `scrub`
 (from `autojudge-base`) to turn it into something safe to look at:
@@ -132,6 +133,24 @@ auto-judge run \
 
 Or run the included smoke test script which also does meta-evaluation: `bash run_kiddie.sh`
 
+## Real Evaluation Datasets
+
+The real evaluation runs come from a password-protected release. `fetch_pilot_dataset.sh` downloads them into `./local-data/` (gitignored) — see [setup step 5](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md#step-5--fetch-the-evaluation-datasets) for the credentials. For example, to obtain the TREC 2026 AutoJudge test set:
+
+```bash
+./fetch_pilot_dataset.sh --dataset rag26
+./fetch_pilot_dataset.sh --dataset ragtime26
+```
+
+`run_all_datasets.py` then runs your judge — one `auto-judge run` per dataset listed in `datasets.yml`:
+
+```bash
+python run_all_datasets.py --workflow judges/naive/workflow.yml \
+    --dataset rag26-generation --dataset ragtime26-repgen
+```
+
+Drop `--dataset` to sweep every fetched dataset. Useful switches: `--dry-run` prints the commands without executing, `--meta-evaluate` correlates against the dataset's truth file, `--upload-tira` uploads the leaderboards to TIRA. Details in [run workflows](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/04-run-workflows.md) and [submit to TIRA](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/07-submit-to-tira.md).
+
 ## Project Structure
 
 ```
@@ -140,13 +159,16 @@ auto-judge-starterkit/
 ├── README.md                # This file
 ├── run_kiddie.sh            # End-to-end smoke test on kiddie
 ├── run_all_datasets.py      # Batch driver: one run per dataset in datasets.yml
+├── fetch_pilot_dataset.sh   # Download the released datasets into ./local-data/
+├── datasets.yml             # Dataset registry used by run_all_datasets.py
 ├── judges/
 │   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)
 │   ├── naive/               # Simple baseline judge
 │   ├── tinyjudge/           # Minimal LLM judge example
 ├── data/
 │   └── kiddie/              # Synthetic test dataset
-├── .claude/skills/          # /autojudge-setup and /autojudge-submit walkthroughs
+├── local-data/              # Fetched evaluation datasets (gitignored)
+├── .claude/skills/          # /autojudge-setup, /autojudge-develop, /autojudge-submit walkthroughs
 └── tests/
     └── test_examples.py     # Smoke tests
 ```
