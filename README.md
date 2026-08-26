@@ -135,11 +135,10 @@ Or run the included smoke test script which also does meta-evaluation: `bash run
 
 ## Real Evaluation Datasets
 
-The real evaluation runs come from a password-protected release. `fetch_pilot_dataset.sh` downloads them into `./local-data/` (gitignored) — see [setup step 5](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md#step-5--fetch-the-evaluation-datasets) for the credentials. For example, to obtain the TREC 2026 AutoJudge test set:
+The real evaluation runs come from a password-protected release. `fetch_datasets.py` downloads them into `./local-data/` (gitignored) — see [setup step 5](https://github.com/trec-auto-judge/.github/blob/main/profile/howto/01-setup-environment.md#step-5--fetch-the-evaluation-datasets) for the credentials. For example, to obtain the TREC 2026 AutoJudge test set:
 
 ```bash
-./fetch_pilot_dataset.sh --dataset rag26
-./fetch_pilot_dataset.sh --dataset ragtime26
+./fetch_datasets.py --test-2026
 ```
 
 `run_all_datasets.py` then runs your judge — one `auto-judge run` per dataset listed in `datasets.yml`:
@@ -159,7 +158,7 @@ auto-judge-starterkit/
 ├── README.md                # This file
 ├── run_kiddie.sh            # End-to-end smoke test on kiddie
 ├── run_all_datasets.py      # Batch driver: one run per dataset in datasets.yml
-├── fetch_pilot_dataset.sh   # Download the released datasets into ./local-data/
+├── fetch_datasets.py        # Download the released datasets into ./local-data/
 ├── datasets.yml             # Dataset registry used by run_all_datasets.py
 ├── judges/
 │   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)

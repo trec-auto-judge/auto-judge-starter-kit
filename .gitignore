@@ -12,5 +12,5 @@ output/
 results/
 *.zip
 
-# Fetched evaluation data (fetch_pilot_dataset.sh); never committed
+# Fetched evaluation data (fetch_datasets.py); never committed
 /local-data/

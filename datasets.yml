@@ -3,7 +3,7 @@
 # Two kinds of entries:
 #   * fully specified (kiddie): responses/topics/truth given directly (committed under ./data).
 #   * from_release: {track, task}: paths come from the fetched tarball's OWN datasets.yml
-#     (./local-data/<track>/datasets.yml, produced by fetch_pilot_dataset.sh). The loader takes
+#     (./local-data/<track>/datasets.yml, produced by fetch_datasets.py). The loader takes
 #     that task's responses/topics/prio1_runs/assessed_topics and merges the tira_id/bucket below,
 #     so data paths are not hand-maintained here — the release is the source of truth for them.
 #
@@ -12,6 +12,10 @@
 #   tira_id:  (optional) TIRA dataset id, for `tira-cli upload` (data submission)
 #   bucket:   (optional) meta-evaluation service track bucket
 #   truth:    (optional) truth leaderboard for local --meta-evaluate (kiddie only; real truth is held server-side)
+#   release, category, tarball: (from_release entries) where fetch_datasets.py downloads the
+#             track's archive from ($BASE_URL/<release>/<tarball>) and which selection flag
+#             covers it (category: pilot -> --pilot, test-2026 -> --test-2026). Datasets sharing
+#             a track (rag25-gen/rag25-auggen) repeat the same values; the fetcher checks they agree.
 
 datasets:
   # Synthetic smoke-test dataset (committed under ./data; no fetch needed)
@@ -21,26 +25,38 @@ datasets:
     truth: ./data/kiddie/eval/kiddie_fake.eval.ir_measures.txt
     tira_id: kiddie-20260605-training
 
-  # Real datasets — fetch with ./fetch_pilot_dataset.sh; responses/topics/prio1/assessed come from the release.
+  # Real datasets — fetch with ./fetch_datasets.py; responses/topics/prio1/assessed come from the release.
   - name: dragun-repgen
     from_release: {track: dragun25, task: repgen}
     tira_id: dragun-repgen-20260608-test
     bucket: dragun
+    release: v0.2.1
+    category: pilot
+    tarball: anonymized-runs-dragun25-v2.1.tar.gz
 
   - name: rag25-gen
     from_release: {track: rag25, task: generation}
     tira_id: rag25-gen-20260608-test
     bucket: rag-generation
+    release: v0.2.1
+    category: pilot
+    tarball: anonymized-runs-rag25-v2.1.tar.gz
 
   - name: rag25-auggen
     from_release: {track: rag25, task: auggen}
     tira_id: rag25-auggen-20260608-test
     bucket: rag-auggen
+    release: v0.2.1
+    category: pilot
+    tarball: anonymized-runs-rag25-v2.1.tar.gz
 
   - name: ragtime25
     from_release: {track: ragtime25, task: repgen}
     tira_id: ragtime25-20260608-test
     bucket: ragtime
+    release: v0.2.1
+    category: pilot
+    tarball: anonymized-runs-ragtime25-v2.1.tar.gz
 
   # TREC 2026 AutoJudge TEST data. The runs are anonymized and the archives ship a
   # data-handling policy (AGENTS.md / CLAUDE.md) that binds coding agents; the judge
@@ -50,11 +66,17 @@ datasets:
     from_release: {track: rag26, task: generation}
     tira_id: rag26-20260826-test
     bucket: rag26
+    release: v1.0.0
+    category: test-2026
+    tarball: anonymized-runs-rag26-v1.tar.gz
 
   - name: ragtime26-repgen
     from_release: {track: ragtime26, task: repgen}
     tira_id: ragtime26-20260826-test
     bucket: ragtime26
+    release: v1.0.0
+    category: test-2026
+    tarball: anonymized-runs-ragtime26-v1.tar.gz
 
   # rag24 — TIRA code-submission ONLY (tira_id: rag24-20260604-test). Not available for local
   # processing; submit code via `tira-cli code-submission ... --dataset rag24-20260604-test`.

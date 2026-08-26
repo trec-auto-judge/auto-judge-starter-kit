@@ -33,7 +33,7 @@ class Dataset:
     bucket: str | None = None   # Optional: meta-evaluation service track bucket (dragun/ragtime/rag-generation/rag-auggen)
 
 
-LOCAL_DATA = Path("./local-data")   # where fetch_pilot_dataset.sh extracts each track
+LOCAL_DATA = Path("./local-data")   # where fetch_datasets.py extracts each track
 
 
 def _resolve_from_release(rel: Dict[str, str], name: str):
@@ -100,7 +100,7 @@ def load_datasets(config_path: Path) -> List[Dataset]:
             bucket=entry.get("bucket"),
         ))
     if unfetched:
-        print(f"Note: not fetched yet (run ./fetch_pilot_dataset.sh --dataset <name>): {', '.join(unfetched)}",
+        print(f"Note: not fetched yet (run ./fetch_datasets.py --dataset <name>): {', '.join(unfetched)}",
               file=sys.stderr)
     return datasets
 
