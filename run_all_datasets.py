@@ -140,7 +140,9 @@ def run_meta_evaluate(dataset: Dataset, dataset_out: Path) -> None:
             cmd.append("--truth-header")
         cmd += [
             "--eval-format", "ir_measures",
-            "--on-missing", "default",
+            # warn (not error) in case a participant judge does not emit scores for
+            # every topic; the evaluation server/TIRA scores those runs with default.
+            "--on-missing", "warn",
             *[str(p) for p in eval_files],
         ]
         return cmd
@@ -415,7 +417,7 @@ def main() -> None:
                     truth_fmt: str = "jsonl" if str(dataset.truth).endswith(".jsonl") else "ir_measures"
                     header: str = " --truth-header" if truth_fmt == "ir_measures" else ""
                     print(f"  # then: auto-judge-evaluate meta-evaluate --truth-leaderboard {dataset.truth}"
-                          f" --truth-format {truth_fmt}{header} --eval-format ir_measures --on-missing default"
+                          f" --truth-format {truth_fmt}{header} --eval-format ir_measures --on-missing warn"
                           f" {ddir}/*.eval.txt")
                 else:
                     print(f"  # (skip meta-evaluation: no 'truth' for {dataset.name})")
