@@ -14,15 +14,17 @@ TOPICS="data/kiddie/topics/kiddie-topics.jsonl"
 RESPONSES="data/kiddie/runs/repgen/"
 TRUTH="data/kiddie/eval/kiddie_fake.eval.ir_measures.txt"
 
-# --- Run the NaiveJudge (no LLM needed) ---
-WORKFLOW="judges/tinyjudge/workflow.yml"
+# --- Run the NaiveJudge (no LLM needed, so this works before the LLM
+# --- endpoint is configured) ---
+# CHANGE THIS to your judge's workflow once you have one:
+WORKFLOW="judges/naive/workflow.yml"
 
 # Other example judges:
-#   judges/naive/workflow.yml    (mo LLM used)
-#   judges/tinyjudge/workflow.yml     (minimal LLM judge, requires API key)
+#   judges/naive/workflow.yml             (no LLM used)
+#   judges/tinyjudge/workflow.yml         (minimal LLM judge, requires API key)
 #   judges/complete_example/workflow.yml  (full protocol example, no LLM)
 
-echo "=== Running NaiveJudge on kiddie ==="
+echo "=== Running ${WORKFLOW} on kiddie ==="
 auto-judge run \
     --workflow "${WORKFLOW}" \
     --rag-responses "${RESPONSES}" \
