@@ -48,8 +48,8 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/trec-autojudge/auto-judge-starterkit"
-Repository = "https://github.com/trec-autojudge/auto-judge-starterkit"
+Homepage = "https://github.com/trec-auto-judge/auto-judge-starter-kit"
+Repository = "https://github.com/trec-auto-judge/auto-judge-starter-kit"
 
 [tool.setuptools.packages.find]
 where = ["."]
