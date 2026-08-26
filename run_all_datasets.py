@@ -409,6 +409,16 @@ def main() -> None:
             print("  " + " \\\n    ".join(cmd_parts))
             system_name: str = f"{workflow.parent.name}-{args.variant or 'default'}"
             ddir: Path = run_dir(out_dir, workflow, dataset.name, args.variant, args.runs, args.topics)
+            if args.meta_evaluate:
+                if dataset.truth:
+                    # Mirror run_meta_evaluate's first attempt (extension picks the format hint)
+                    truth_fmt: str = "jsonl" if str(dataset.truth).endswith(".jsonl") else "ir_measures"
+                    header: str = " --truth-header" if truth_fmt == "ir_measures" else ""
+                    print(f"  # then: auto-judge-evaluate meta-evaluate --truth-leaderboard {dataset.truth}"
+                          f" --truth-format {truth_fmt}{header} --eval-format ir_measures --on-missing default"
+                          f" {ddir}/*.eval.txt")
+                else:
+                    print(f"  # (skip meta-evaluation: no 'truth' for {dataset.name})")
             if args.upload_tira:
                 if dataset.tira_id:
                     print(f"  # then: tira-cli upload --dataset {dataset.tira_id} --directory {ddir} --system {system_name}")
