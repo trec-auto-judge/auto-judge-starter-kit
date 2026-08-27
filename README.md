@@ -159,6 +159,7 @@ auto-judge-starterkit/
 ├── run_kiddie.sh            # End-to-end smoke test on kiddie
 ├── run_all_datasets.py      # Batch driver: one run per dataset in datasets.yml
 ├── fetch_datasets.py        # Download the released datasets into ./local-data/
+├── check_container_setup.sh # Preflight: is Docker/podman ready for a code submission?
 ├── datasets.yml             # Dataset registry used by run_all_datasets.py
 ├── judges/
 │   ├── complete_example/    # Full protocol example (nuggets, qrels, leaderboard)
