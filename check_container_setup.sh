@@ -21,7 +21,7 @@
 #   $ systemctl --user enable --now podman.socket                                  # docker-compatible API endpoint
 #   $ export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock                # only if `docker` is not podman
 #   $ sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER   # subordinate IDs for image unpacking
-#   $ podman system migrate                                                        # apply the new ID ranges
+#   $ podman system migrate                                                        # apply new ID ranges / discard a stale session mapping
 #   $ mkdir -p ~/.config/containers                                                # signature policy location
 #   $ printf '{\n  "default": [{"type": "insecureAcceptAnything"}]\n}\n' > ~/.config/containers/policy.json
 #
