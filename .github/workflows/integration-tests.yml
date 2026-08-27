@@ -24,15 +24,12 @@ jobs:
         run: |
           pip3 install .[test]
           pip3 install --no-deps ir_datasets
-          pip3 uninstall -y tira
-          pip3 install 'git+https://github.com/tira-io/tira.git@rag4reports#subdirectory=python-client'
 
       - name: Test judges/naive
         run: |
           tira-cli code-submission \
             --dry-run \
             --path . \
-            --file judges/naive/Dockerfile \
             --task trec-auto-judge \
             --dataset kiddie-20260605-training \
             --command 'auto-judge run --workflow /auto-judge/judges/naive/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
@@ -43,7 +40,6 @@ jobs:
             --dry-run \
             --path . \
             --forward-environment-variable OPENAI_BASE_URL OPENAI_MODEL OPENAI_API_KEY \
-            --file judges/tinyjudge/Dockerfile \
             --task trec-auto-judge \
             --dataset kiddie-20260605-training \
             --command 'auto-judge run --workflow /auto-judge/judges/tinyjudge/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir'
