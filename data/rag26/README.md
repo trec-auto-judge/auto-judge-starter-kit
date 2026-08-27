@@ -16,7 +16,6 @@ tira_configs:
   baseline:
     link: https://github.com/trec-auto-judge/auto-judge-starter-kit/tree/main/
     command: auto-judge run --workflow /auto-judge/judges/naive/workflow.yml --rag-responses $inputDataset/runs/*/ --rag-topics $inputDataset/topics/*.jsonl --out-dir $outputDir
-    file: judges/naive/Dockerfile
     format:
       name: ["trec-eval-leaderboard"]
   input_format:
