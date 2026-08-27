@@ -64,7 +64,7 @@ datasets:
   # https://github.com/trec-auto-judge/.github/blob/main/profile/howto/data-policy.md
   - name: rag26-generation
     from_release: {track: rag26, task: generation}
-    tira_id: rag26-20260826-test
+    tira_id: rag26-20260827_1-test
     bucket: rag26
     release: v1.0.0
     category: test-2026
@@ -72,7 +72,7 @@ datasets:
 
   - name: ragtime26-repgen
     from_release: {track: ragtime26, task: repgen}
-    tira_id: ragtime26-20260826-test
+    tira_id: ragtime26-20260827-test
     bucket: ragtime26
     release: v1.0.0
     category: test-2026
