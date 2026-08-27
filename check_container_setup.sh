@@ -5,9 +5,11 @@
 # tira-cli code-submission builds and test-runs a Docker image on your
 # machine, so Docker or podman must be able to build and run containers.
 # This script diagnoses the common failure modes and prints the exact fix
-# for each -- it is read-only and never changes your system itself.
+# for each. By default it is read-only and never changes your system; with
+# --fix it applies the one safe repair it can do itself (podman system
+# migrate, only when the ID-mapping check fails).
 #
-# Usage:  ./check_container_setup.sh
+# Usage:  ./check_container_setup.sh [--fix]
 #
 # Setup at a glance -- the checks below tell you which of these you need:
 #
@@ -29,6 +31,14 @@
 #   tira-cli verify-installation --task trec-auto-judge --team <your-team>
 
 set -u
+
+FIX=0
+for arg in "$@"; do
+    case "$arg" in
+        --fix) FIX=1 ;;
+        *) echo "Usage: $0 [--fix]" >&2; exit 2 ;;
+    esac
+done
 
 FAILURES=0
 
@@ -100,11 +110,17 @@ else  # podman
     # newuidmap/newgidmap helpers, which e.g. nix dev shells can shadow with
     # non-setuid copies. A working mapping has 2+ lines; a collapsed one has 1
     # and image unpacking fails with 'lchown ...: invalid argument'.
-    if [ "$(podman unshare cat /proc/self/uid_map 2>/dev/null | wc -l)" -ge 2 ]; then
+    MAP_LINES="$(podman unshare cat /proc/self/uid_map 2>/dev/null | wc -l)"
+    if [ "$MAP_LINES" -lt 2 ] && [ "$FIX" = 1 ]; then
+        echo "fix   mapping is collapsed; running: podman system migrate"
+        podman system migrate
+        MAP_LINES="$(podman unshare cat /proc/self/uid_map 2>/dev/null | wc -l)"
+    fi
+    if [ "$MAP_LINES" -ge 2 ]; then
         ok "user namespace mapping works (podman unshare)"
     else
         fail "subordinate ID mapping is not usable here (this shell's uid_map: $(tr -s ' \n' ' ;' < /proc/self/uid_map 2>/dev/null)). Pulling/unpacking NEW images will fail ('lchown ...: invalid argument'); builds from already-unpacked images may still succeed" \
-             "run 'podman system migrate' and re-run this script -- rootless podman keeps its namespace alive in a per-session pause process, and migrate discards a stale one. If it still fails: newuidmap/newgidmap may be non-setuid in this environment, or this shell may itself run inside a user namespace -- find an environment where this check passes and run container builds there"
+             "run 'podman system migrate' (or re-run this script with --fix) -- rootless podman keeps its namespace alive in a per-session pause process, and migrate discards a stale one. If it still fails: newuidmap/newgidmap may be non-setuid in this environment, or this shell may itself run inside a user namespace -- find an environment where this check passes and run container builds there"
     fi
 
     # Signature policy (podman-only; Docker never needs it).
